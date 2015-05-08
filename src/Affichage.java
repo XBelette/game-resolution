@@ -48,20 +48,23 @@ public class Affichage extends JPanel {
 					(int) Math.round(50 + H * pas));
 
 		// Placement des pions
-		for (byte l = 0; l < L; l++)
-			for (byte h = 0; h < H; h++) {
-				byte couleur = p.quiEstLa(l, h);
+		Coup pionPlace = new Coup();
+		byte couleur = 0;
+		while(pionPlace.line < L){
+			while(pionPlace.colonne < H){
+				couleur = p.quiEstLa(pionPlace);
 				if (couleur == 1 || couleur == -1) {
 					if (couleur == 1)
 						g.setColor(Color.WHITE);
 					else 
 						g.setColor(Color.BLACK);
 					
-					g.fillOval((int)(50+pas*l+pas/6),(int)(50+(H-h-1)*pas+pas/6),(int)(2*pas/3),(int)(2*pas/3));
-					
-					
+					g.fillOval((int)(50+pas*pionPlace.line+pas/6),(int)(50+(H-pionPlace.colonne-1)*pas+pas/6),(int)(2*pas/3),(int)(2*pas/3));
 				}
+				pionPlace.colonne++;
 			}
+			pionPlace.line++;
+		}
 
 	}
 
