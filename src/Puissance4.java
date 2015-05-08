@@ -1,3 +1,6 @@
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 
 public class Puissance4 extends Jeu{
 	
@@ -15,20 +18,34 @@ public class Puissance4 extends Jeu{
 	
 	// 1 pour les blancs, -1 pour les noirs
 	@Override
-	public void coup(byte colonne, byte line, byte couleur){
+	public void joueCoup(Coup coup, byte couleur){
 		// On recalcule line de toute façon
 		// L'argument est là pour hériter cette méthode de la super classe Jeu
-		line = 0;
-		while (line<H && p.quiEstLa(colonne,line)!=0)
-			line++;
-		if (line == H)
+		coup.line = 0;
+		while (coup.line<H && p.quiEstLa(coup)!=0)
+			coup.line++;
+		if (coup.line == H)
 			throw new IllegalArgumentException("Colonne pleine");
 		if (couleur == 1)
-			p.ajouteBlanc(colonne,line);
+			p.ajouteBlanc(coup);
 		else if (couleur == -1)
-			p.ajouteNoir(colonne,line);
+			p.ajouteNoir(coup);
 		else
 			throw new IllegalArgumentException("Couleur indeterminee");
+	}
+	
+	public Queue<Coup> GetCoupsPossibles(){
+		Queue<Coup> coupsPossibles = new PriorityQueue<Coup>();
+		Coup coupCourant = new Coup();
+		// On ignore les lignes, chic au p4 !
+		while(coupCourant.colonne < H){
+			// Une priorité pourrait être calculée ici
+			if(p.quiEstLa(coupCourant) == 0) coupsPossibles.add(coupCourant);
+			coupCourant.colonne++;
+		}
+	
+		
+		return coupsPossibles;
 	}
 
 	

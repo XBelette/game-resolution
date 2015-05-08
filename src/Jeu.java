@@ -1,3 +1,5 @@
+import java.util.Queue;
+
 
 public abstract class Jeu {
 	
@@ -21,6 +23,8 @@ public abstract class Jeu {
 		return p;
 	}
 	
-	abstract public void coup(byte colonne, byte line, byte couleur);
+	abstract public Queue<Coup> GetCoupsPossibles();
+	
+	abstract public void joueCoup(Coup coup, byte couleur);
 
 }

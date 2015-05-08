@@ -1,3 +1,6 @@
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 
 public class Morpion extends Jeu{
 
@@ -17,14 +20,31 @@ public class Morpion extends Jeu{
 	
 	// 1 pour les blancs, -1 pour les noirs
 	@Override
-	public void coup(byte colonne, byte line, byte couleur){
-		if (p.quiEstLa(colonne, line)!=0)
+	public void joueCoup(Coup coup, byte couleur){
+		if (p.quiEstLa(coup)!=0)
 			throw new IllegalArgumentException("Coup interdit");
 		if (couleur == 1)
-			p.ajouteBlanc(colonne,line);
+			p.ajouteBlanc(coup);
 		else if (couleur == -1)
-			p.ajouteNoir(colonne,line);
+			p.ajouteNoir(coup);
 		else
 			throw new IllegalArgumentException("Couleur indeterminee");
+	}
+	
+	@Override
+	public Queue<Coup> GetCoupsPossibles(){
+		Queue<Coup> coupsPossibles = new PriorityQueue<Coup>();
+		Coup coupCourant = new Coup();
+		while(coupCourant.line < L){
+			while(coupCourant.colonne < H){
+				// Une priorité pourrait être calculée ici
+				if(p.quiEstLa(coupCourant) == 0) coupsPossibles.add(coupCourant);
+				coupCourant.colonne++;
+			}
+			coupCourant.line++;
+		}
+		
+		
+		return coupsPossibles;
 	}
 }
