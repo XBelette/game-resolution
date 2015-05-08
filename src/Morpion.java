@@ -58,12 +58,12 @@ public class Morpion extends Jeu{
 		// Rappel : retourne true si blanc gagne, false si noir gagne, et null si rien n'est joué
 		Boolean test = null;
 		// Blanc gagne-t-il ?
-		test = p.alignementHorizontal((byte)3, Color.BLANC) || p.alignementVertical((byte) 3, Color.BLANC)
-				|| p.alignementDiagonaleAntislash((byte) 3, Color.BLANC) || p.alignementDiagonaleSlash((byte) 3, Color.BLANC);
+		test = p.alignementHorizontal(k, Color.BLANC) || p.alignementVertical(k, Color.BLANC)
+				|| p.alignementDiagonaleAntislash(k, Color.BLANC) || p.alignementDiagonaleSlash(k, Color.BLANC);
 		if(test) return true;
 		// Okay, donc blanc ne gagne pas. Et noir ?
-		test = p.alignementHorizontal((byte)3, Color.NOIR) || p.alignementVertical((byte) 3, Color.NOIR)
-				|| p.alignementDiagonaleAntislash((byte) 3, Color.NOIR) || p.alignementDiagonaleSlash((byte) 3, Color.NOIR);
+		test = p.alignementHorizontal(k, Color.NOIR) || p.alignementVertical(k, Color.NOIR)
+				|| p.alignementDiagonaleAntislash(k, Color.NOIR) || p.alignementDiagonaleSlash(k, Color.NOIR);
 		if(test) return false;
 		
 		// Si vraiment personne n'a gagné :
