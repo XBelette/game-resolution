@@ -55,6 +55,15 @@ public class Position {
 		positionNoirs= (positionNoirs | adresse);
 		return true;
 	}
+	
+	public boolean remove(Coup coup){
+		long adresse = ~(1 << coup.colonne*(H+1)+coup.line);
+		if(quiEstLa(coup) == 0)
+			return false;
+		positionBlancs = (positionBlancs & adresse);
+		positionNoirs = (positionNoirs & adresse);
+		return true;
+	}
 
 	public boolean alignementVertical(byte n, Color color){ 
 		// Teste si un alignement vertical de l jetons du joueur color ou plus existe
@@ -81,7 +90,7 @@ public class Position {
 		return grilleAlignements > 0;
 	}
 	
-	public boolean aligneHorizontal(byte n, Color color){
+	public boolean alignementHorizontal(byte n, Color color){
 		// Cf supra avec des alignements horizontaux
 		// Change le décalage.
 		long grilleAlignements;
@@ -105,7 +114,7 @@ public class Position {
 		return grilleAlignements > 0;
 	}
 	
-	public boolean aligneDiagonaleAntislash(byte n, Color color){
+	public boolean alignementDiagonaleAntislash(byte n, Color color){
 		// Cf supra avec des alignements comme ceci : \
 		// Change le décalage.
 		long grilleAlignements;
@@ -129,7 +138,7 @@ public class Position {
 		return grilleAlignements > 0;
 	}
 	
-	public boolean aligneDiagonaleSlash(byte n, Color color){
+	public boolean alignementDiagonaleSlash(byte n, Color color){
 		// Cf supra avec des alignements comme ceci : /
 		// Change le décalage.
 		long grilleAlignements;
