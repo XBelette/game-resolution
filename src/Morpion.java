@@ -1,5 +1,4 @@
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 
 public class Morpion extends Jeu{
@@ -23,9 +22,9 @@ public class Morpion extends Jeu{
 	public void joueCoup(Coup coup, Color couleur){
 		if (p.quiEstLa(coup)!=0)
 			throw new IllegalArgumentException("Coup interdit");
-		if (couleur == couleur.BLANC)
+		if (couleur == Color.BLANC)
 			p.ajouteBlanc(coup);
-		else if (couleur == couleur.NOIR)
+		else if (couleur == Color.NOIR)
 			p.ajouteNoir(coup);
 		else
 			throw new IllegalArgumentException("Couleur indeterminee");
