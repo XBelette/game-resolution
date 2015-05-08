@@ -25,12 +25,12 @@ public class AfficheAffichage {
 		byte L = 7;
 		byte H = 5;
 		Jeu j = new Puissance4(L,H);
-		((Puissance4) j).coup((byte)3,(byte)1);
-		((Puissance4) j).coup((byte)1,(byte)-1);
-		((Puissance4) j).coup((byte)3,(byte)1);
-		((Puissance4) j).coup((byte)3,(byte)-1);
-		((Puissance4) j).coup((byte)3,(byte)1);
-		((Puissance4) j).coup((byte)3,(byte)1);
+		((Puissance4) j).coup((byte)3,(byte)0,(byte)1);
+		((Puissance4) j).coup((byte)1,(byte)0,(byte)-1);
+		((Puissance4) j).coup((byte)3,(byte)0,(byte)1);
+		((Puissance4) j).coup((byte)3,(byte)0,(byte)-1);
+		((Puissance4) j).coup((byte)3,(byte)0,(byte)1);
+		((Puissance4) j).coup((byte)3,(byte)0,(byte)1);
 		affichePlateau(j);
 	}
 }

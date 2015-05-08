@@ -14,8 +14,11 @@ public class Puissance4 extends Jeu{
 	}
 	
 	// 1 pour les blancs, -1 pour les noirs
-	public void coup(byte colonne, byte couleur){
-		byte line = 0;
+	@Override
+	public void coup(byte colonne, byte line, byte couleur){
+		// On recalcule line de toute façon
+		// L'argument est là pour hériter cette méthode de la super classe Jeu
+		line = 0;
 		while (line<H && p.quiEstLa(colonne,line)!=0)
 			line++;
 		if (line == H)

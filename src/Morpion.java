@@ -16,6 +16,7 @@ public class Morpion extends Jeu{
 	}
 	
 	// 1 pour les blancs, -1 pour les noirs
+	@Override
 	public void coup(byte colonne, byte line, byte couleur){
 		if (p.quiEstLa(colonne, line)!=0)
 			throw new IllegalArgumentException("Coup interdit");

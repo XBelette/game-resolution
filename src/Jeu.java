@@ -20,5 +20,7 @@ public abstract class Jeu {
 	public Position getp() {
 		return p;
 	}
+	
+	abstract public void coup(byte colonne, byte line, byte couleur);
 
 }
