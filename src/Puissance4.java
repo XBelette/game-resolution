@@ -18,7 +18,7 @@ public class Puissance4 extends Jeu{
 	
 	// 1 pour les blancs, -1 pour les noirs
 	@Override
-	public void joueCoup(Coup coup, byte couleur){
+	public void joueCoup(Coup coup, Color couleur){
 		// On recalcule line de toute façon
 		// L'argument est là pour hériter cette méthode de la super classe Jeu
 		coup.line = 0;
@@ -26,9 +26,9 @@ public class Puissance4 extends Jeu{
 			coup.line++;
 		if (coup.line == H)
 			throw new IllegalArgumentException("Colonne pleine");
-		if (couleur == 1)
+		if (couleur == Color.BLANC)
 			p.ajouteBlanc(coup);
-		else if (couleur == -1)
+		else if (couleur == Color.NOIR)
 			p.ajouteNoir(coup);
 		else
 			throw new IllegalArgumentException("Couleur indeterminee");
