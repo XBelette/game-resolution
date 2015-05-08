@@ -50,16 +50,26 @@ public class Puissance4 extends Jeu{
 		// Rappel : retourne true si blanc gagne, false si noir gagne, et null si rien n'est joué
 		Boolean test = null;
 		// Blanc gagne-t-il ?
-		test = p.aligneHorizontal((byte)4, Color.BLANC) || p.alignementVertical((byte) 4, Color.BLANC)
-				|| p.aligneDiagonaleAntislash((byte) 4, Color.BLANC) || p.aligneDiagonaleSlash((byte) 4, Color.BLANC);
+		test = p.alignementHorizontal((byte)4, Color.BLANC) || p.alignementVertical((byte) 4, Color.BLANC)
+				|| p.alignementDiagonaleAntislash((byte) 4, Color.BLANC) || p.alignementDiagonaleSlash((byte) 4, Color.BLANC);
 		if(test) return true;
 		// Okay, donc blanc ne gagne pas. Et noir ?
-		test = p.aligneHorizontal((byte)4, Color.NOIR) || p.alignementVertical((byte) 4, Color.NOIR)
-				|| p.aligneDiagonaleAntislash((byte) 4, Color.NOIR) || p.aligneDiagonaleSlash((byte) 4, Color.NOIR);
+		test = p.alignementHorizontal((byte)4, Color.NOIR) || p.alignementVertical((byte) 4, Color.NOIR)
+				|| p.alignementDiagonaleAntislash((byte) 4, Color.NOIR) || p.alignementDiagonaleSlash((byte) 4, Color.NOIR);
 		if(test) return false;
 		
 		// Si vraiment personne n'a gagné :
 		return null;
+	}
+
+	@Override
+	public void undo(Coup coup) {
+		coup.line = H;
+		while(coup.line >= 0 && p.quiEstLa(coup) == 0)
+			coup.line--;
+		if(coup.line < 0)
+			throw new IllegalArgumentException("Colonne vide");
+		p.remove(coup);
 	}
 
 	
