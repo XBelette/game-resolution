@@ -41,7 +41,7 @@ public class Position {
 	}
 	
 	public boolean ajouteBlanc(Coup coup){
-		long adresse = (long)(Math.pow(2, coup.colonne*(H+1)+coup.line));
+		long adresse = 1 << coup.colonne*(H+1)+coup.line;
 		if (quiEstLa(coup) != 0)
 			return false;
 		positionBlancs = (positionBlancs | adresse);
@@ -49,7 +49,7 @@ public class Position {
 	}
 	
 	public boolean ajouteNoir(Coup coup){
-		long adresse = (long)(Math.pow(2, coup.colonne*(H+1)+coup.line));
+		long adresse = 1 << coup.colonne*(H+1)+coup.line;
 		if (quiEstLa(coup) != 0)
 			return false;
 		positionNoirs= (positionNoirs | adresse);
