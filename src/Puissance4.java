@@ -5,7 +5,6 @@ public class Puissance4 extends Jeu{
 	
 	byte L;
 	byte H;
-	Position p;
 
 	public Puissance4(byte L, byte H, Position p){
 		super(L, H, p);
