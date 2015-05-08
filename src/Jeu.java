@@ -26,5 +26,5 @@ public abstract class Jeu {
 	abstract public PriorityQueue<Coup> GetCoupsPossibles();
 	abstract public Boolean blancGagne(); // renvoie true si blanc a gagné, false si noir a gagné, et null sinon 
 	abstract public void joueCoup(Coup coup, Color couleur);
-
+	abstract public void undo(Coup coup); // Défait un coup.
 }
