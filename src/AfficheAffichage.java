@@ -25,11 +25,11 @@ public class AfficheAffichage {
 		byte L = 7;
 		byte H = 5;
 		Jeu j = new Puissance4(L,H);
-		((Puissance4) j).joueCoup(new Coup((byte)3,(byte)0),(byte)1);
-		((Puissance4) j).joueCoup(new Coup((byte)1,(byte)0),(byte)-1);
-		((Puissance4) j).joueCoup(new Coup((byte)3,(byte)0),(byte)1);
-		((Puissance4) j).joueCoup(new Coup((byte)3,(byte)0),(byte)-1);
-		((Puissance4) j).joueCoup(new Coup((byte)3,(byte)0),(byte)1);
+		((Puissance4) j).joueCoup(new Coup((byte)3,(byte)0),Color.BLANC);
+		((Puissance4) j).joueCoup(new Coup((byte)1,(byte)0),Color.NOIR);
+		((Puissance4) j).joueCoup(new Coup((byte)3,(byte)0),Color.BLANC);
+		((Puissance4) j).joueCoup(new Coup((byte)3,(byte)0),Color.NOIR);
+		((Puissance4) j).joueCoup(new Coup((byte)3,(byte)0),Color.BLANC);
 		affichePlateau(j);
 	}
 }
