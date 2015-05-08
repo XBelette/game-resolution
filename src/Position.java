@@ -1,7 +1,7 @@
 
 public class Position {
 
-	// L'origine est en bas � gauche du tableau
+	// L'origine est en bas � gauche du tableau
 	// Si la ligne et la colonne sont entre 0 et L/H, avec l'origine comme ci-dessus,
 	// la case (col, line) a pour adresse le bit col*(H+1) + line
 	
@@ -29,10 +29,10 @@ public class Position {
 		return (positionBlancs == 0 && positionNoirs == 0);
 	}
 	
-	// 1 pour les blancs, -1 pour les noirs, 0 pour inoccup�
+	// 1 pour les blancs, -1 pour les noirs, 0 pour inoccup�
 	
-	public byte quiEstLa(byte col, byte line){
-		long adresse = (long)(Math.pow(2, col*(H+1)+line));
+	public byte quiEstLa(Coup coup){
+		long adresse = (long)(Math.pow(2, coup.colonne*(H+1)+coup.line));
 		if ((positionBlancs & adresse) != 0)
 			return 1;
 		else if ((positionNoirs & adresse) != 0)
@@ -40,21 +40,91 @@ public class Position {
 		return 0;
 	}
 	
-	public boolean ajouteBlanc(byte col, byte line){
-		long adresse = (long)(Math.pow(2, col*(H+1)+line));
-		if (quiEstLa(col,line) != 0)
+	public boolean ajouteBlanc(Coup coup){
+		long adresse = (long)(Math.pow(2, coup.colonne*(H+1)+coup.line));
+		if (quiEstLa(coup) != 0)
 			return false;
 		positionBlancs = (positionBlancs | adresse);
 		return true;
 	}
 	
-	public boolean ajouteNoir(byte col, byte line){
-		long adresse = (long)(Math.pow(2, col*(H+1)+line));
-		if (quiEstLa(col,line) != 0)
+	public boolean ajouteNoir(Coup coup){
+		long adresse = (long)(Math.pow(2, coup.colonne*(H+1)+coup.line));
+		if (quiEstLa(coup) != 0)
 			return false;
 		positionNoirs= (positionNoirs | adresse);
 		return true;
 	}
 
+	public boolean alignementVertical(byte n, byte color){ // Teste si un alignement vertical de l jetons du joueur color ou plus existe
+														   // Notons que cette fonction ne peut fonctionner que pour n >= 1
+		long grilleAlignements;
+		// On crée la grille des alignements de longueur 1...
+		if(color == 1)
+			grilleAlignements=this.positionBlancs;
+		else
+			grilleAlignements=this.positionNoirs;
+		
+		// Puis on augmente la longueur !
+		for(int i = 1; i < n; i++){
+			grilleAlignements = grilleAlignements & (grilleAlignements >> 1);
+		}
+		
+		// Il y a au moins un alignement cherché ssi il reste un 1 quelque part dans la grille.
+		return grilleAlignements > 0;
+	}
 	
+	public boolean aligneHorizontal(byte n, byte color){
+		// Cf supra avec des alignements horizontaux
+		// Change le décalage.
+		long grilleAlignements;
+		// On crée la grille des alignements de longueur 1...
+		if(color == 1)
+			grilleAlignements=this.positionBlancs;
+		else
+			grilleAlignements=this.positionNoirs;
+		
+		// Puis on augmente la longueur !
+		for(int i = 1; i < n; i++){
+			grilleAlignements = grilleAlignements & (grilleAlignements >> H+1);
+		}
+		
+		return grilleAlignements > 0;
+	}
+	
+	public boolean aligneDiagonaleAntislash(byte n, byte color){
+		// Cf supra avec des alignements comme ceci : \
+		// Change le décalage.
+		long grilleAlignements;
+		// On crée la grille des alignements de longueur 1...
+		if(color == 1)
+			grilleAlignements=this.positionBlancs;
+		else
+			grilleAlignements=this.positionNoirs;
+		
+		// Puis on augmente la longueur !
+		for(int i = 1; i < n; i++){
+			grilleAlignements = grilleAlignements & (grilleAlignements >> H);
+		}
+		
+		return grilleAlignements > 0;
+	}
+	
+	public boolean aligneDiagonaleSlash(byte n, byte color){
+		// Cf supra avec des alignements comme ceci : /
+		// Change le décalage.
+		long grilleAlignements;
+		// On crée la grille des alignements de longueur 1...
+		if(color == 1)
+			grilleAlignements=this.positionBlancs;
+		else
+			grilleAlignements=this.positionNoirs;
+		
+		// Puis on augmente la longueur !
+		for(int i = 1; i < n; i++){
+			grilleAlignements = grilleAlignements & (grilleAlignements >> H+2);
+		}
+		
+		return grilleAlignements > 0;
+	}
 }
