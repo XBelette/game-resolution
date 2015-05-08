@@ -32,8 +32,8 @@ public class Morpion extends Jeu{
 	}
 	
 	@Override
-	public Queue<Coup> GetCoupsPossibles(){
-		Queue<Coup> coupsPossibles = new PriorityQueue<Coup>();
+	public PriorityQueue<Coup> GetCoupsPossibles(){
+		PriorityQueue<Coup> coupsPossibles = new PriorityQueue<Coup>();
 		Coup coupCourant = new Coup();
 		while(coupCourant.line < L){
 			while(coupCourant.colonne < H){

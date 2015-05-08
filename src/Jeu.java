@@ -1,4 +1,4 @@
-import java.util.Queue;
+import java.util.PriorityQueue;
 
 
 public abstract class Jeu {
@@ -23,7 +23,7 @@ public abstract class Jeu {
 		return p;
 	}
 	
-	abstract public Queue<Coup> GetCoupsPossibles();
+	abstract public PriorityQueue<Coup> GetCoupsPossibles();
 	
 	abstract public void joueCoup(Coup coup, byte couleur);
 

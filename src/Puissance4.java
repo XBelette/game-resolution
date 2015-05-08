@@ -34,8 +34,8 @@ public class Puissance4 extends Jeu{
 			throw new IllegalArgumentException("Couleur indeterminee");
 	}
 	
-	public Queue<Coup> GetCoupsPossibles(){
-		Queue<Coup> coupsPossibles = new PriorityQueue<Coup>();
+	public PriorityQueue<Coup> GetCoupsPossibles(){
+		PriorityQueue<Coup> coupsPossibles = new PriorityQueue<Coup>();
 		Coup coupCourant = new Coup();
 		// On ignore les lignes, chic au p4 !
 		while(coupCourant.colonne < H){
