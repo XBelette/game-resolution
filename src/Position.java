@@ -56,14 +56,21 @@ public class Position {
 		return true;
 	}
 
-	public boolean alignementVertical(byte n, byte color){ // Teste si un alignement vertical de l jetons du joueur color ou plus existe
-														   // Notons que cette fonction ne peut fonctionner que pour n >= 1
+	public boolean alignementVertical(byte n, Color color){ 
+		// Teste si un alignement vertical de l jetons du joueur color ou plus existe
+		// Notons que cette fonction ne peut fonctionner que pour n >= 1
 		long grilleAlignements;
 		// On crée la grille des alignements de longueur 1...
-		if(color == 1)
-			grilleAlignements=this.positionBlancs;
-		else
-			grilleAlignements=this.positionNoirs;
+		switch(color){
+		case BLANC:
+			grilleAlignements = this.positionBlancs;
+			break;
+		case NOIR:
+			grilleAlignements = this.positionNoirs;
+			break;
+		default:
+			throw new IllegalArgumentException("Erreur dans les fonctions d'alignements : il y a une troisième couleur !");
+		}
 		
 		// Puis on augmente la longueur !
 		for(int i = 1; i < n; i++){
@@ -74,15 +81,21 @@ public class Position {
 		return grilleAlignements > 0;
 	}
 	
-	public boolean aligneHorizontal(byte n, byte color){
+	public boolean aligneHorizontal(byte n, Color color){
 		// Cf supra avec des alignements horizontaux
 		// Change le décalage.
 		long grilleAlignements;
 		// On crée la grille des alignements de longueur 1...
-		if(color == 1)
-			grilleAlignements=this.positionBlancs;
-		else
-			grilleAlignements=this.positionNoirs;
+		switch(color){
+		case BLANC:
+			grilleAlignements = this.positionBlancs;
+			break;
+		case NOIR:
+			grilleAlignements = this.positionNoirs;
+			break;
+		default:
+			throw new IllegalArgumentException("Erreur dans les fonctions d'alignements : il y a une troisième couleur !");
+		}
 		
 		// Puis on augmente la longueur !
 		for(int i = 1; i < n; i++){
@@ -92,15 +105,21 @@ public class Position {
 		return grilleAlignements > 0;
 	}
 	
-	public boolean aligneDiagonaleAntislash(byte n, byte color){
+	public boolean aligneDiagonaleAntislash(byte n, Color color){
 		// Cf supra avec des alignements comme ceci : \
 		// Change le décalage.
 		long grilleAlignements;
 		// On crée la grille des alignements de longueur 1...
-		if(color == 1)
-			grilleAlignements=this.positionBlancs;
-		else
-			grilleAlignements=this.positionNoirs;
+		switch(color){
+		case BLANC:
+			grilleAlignements = this.positionBlancs;
+			break;
+		case NOIR:
+			grilleAlignements = this.positionNoirs;
+			break;
+		default:
+			throw new IllegalArgumentException("Erreur dans les fonctions d'alignements : il y a une troisième couleur !");
+		}
 		
 		// Puis on augmente la longueur !
 		for(int i = 1; i < n; i++){
@@ -110,15 +129,21 @@ public class Position {
 		return grilleAlignements > 0;
 	}
 	
-	public boolean aligneDiagonaleSlash(byte n, byte color){
+	public boolean aligneDiagonaleSlash(byte n, Color color){
 		// Cf supra avec des alignements comme ceci : /
 		// Change le décalage.
 		long grilleAlignements;
 		// On crée la grille des alignements de longueur 1...
-		if(color == 1)
-			grilleAlignements=this.positionBlancs;
-		else
-			grilleAlignements=this.positionNoirs;
+		switch(color){
+		case BLANC:
+			grilleAlignements = this.positionBlancs;
+			break;
+		case NOIR:
+			grilleAlignements = this.positionNoirs;
+			break;
+		default:
+			throw new IllegalArgumentException("Erreur dans les fonctions d'alignements : il y a une troisième couleur !");
+		}
 		
 		// Puis on augmente la longueur !
 		for(int i = 1; i < n; i++){

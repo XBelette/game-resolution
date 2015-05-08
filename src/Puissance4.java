@@ -43,9 +43,24 @@ public class Puissance4 extends Jeu{
 			if(p.quiEstLa(coupCourant) == 0) coupsPossibles.add(coupCourant);
 			coupCourant.colonne++;
 		}
-	
-		
 		return coupsPossibles;
+	}
+	
+	@Override
+	public Boolean blancGagne(){
+		// Rappel : retourne true si blanc gagne, false si noir gagne, et null si rien n'est joué
+		Boolean test = null;
+		// Blanc gagne-t-il ?
+		test = p.aligneHorizontal((byte)4, Color.BLANC) || p.alignementVertical((byte) 4, Color.BLANC)
+				|| p.aligneDiagonaleAntislash((byte) 4, Color.BLANC) || p.aligneDiagonaleSlash((byte) 4, Color.BLANC);
+		if(test) return true;
+		// Okay, donc blanc ne gagne pas. Et noir ?
+		test = p.aligneHorizontal((byte)4, Color.NOIR) || p.alignementVertical((byte) 4, Color.NOIR)
+				|| p.aligneDiagonaleAntislash((byte) 4, Color.NOIR) || p.aligneDiagonaleSlash((byte) 4, Color.NOIR);
+		if(test) return false;
+		
+		// Si vraiment personne n'a gagné :
+		return null;
 	}
 
 	

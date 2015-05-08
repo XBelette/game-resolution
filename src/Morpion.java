@@ -20,12 +20,12 @@ public class Morpion extends Jeu{
 	
 	// 1 pour les blancs, -1 pour les noirs
 	@Override
-	public void joueCoup(Coup coup, byte couleur){
+	public void joueCoup(Coup coup, Color couleur){
 		if (p.quiEstLa(coup)!=0)
 			throw new IllegalArgumentException("Coup interdit");
-		if (couleur == 1)
+		if (couleur == couleur.BLANC)
 			p.ajouteBlanc(coup);
-		else if (couleur == -1)
+		else if (couleur == couleur.NOIR)
 			p.ajouteNoir(coup);
 		else
 			throw new IllegalArgumentException("Couleur indeterminee");
@@ -47,4 +47,22 @@ public class Morpion extends Jeu{
 		
 		return coupsPossibles;
 	}
+	
+	@Override
+	public Boolean blancGagne(){
+		// Rappel : retourne true si blanc gagne, false si noir gagne, et null si rien n'est joué
+		Boolean test = null;
+		// Blanc gagne-t-il ?
+		test = p.aligneHorizontal((byte)3, Color.BLANC) || p.alignementVertical((byte) 3, Color.BLANC)
+				|| p.aligneDiagonaleAntislash((byte) 3, Color.BLANC) || p.aligneDiagonaleSlash((byte) 3, Color.BLANC);
+		if(test) return true;
+		// Okay, donc blanc ne gagne pas. Et noir ?
+		test = p.aligneHorizontal((byte)3, Color.NOIR) || p.alignementVertical((byte) 3, Color.NOIR)
+				|| p.aligneDiagonaleAntislash((byte) 3, Color.NOIR) || p.aligneDiagonaleSlash((byte) 3, Color.NOIR);
+		if(test) return false;
+		
+		// Si vraiment personne n'a gagné :
+		return null;
+	}
+	
 }
