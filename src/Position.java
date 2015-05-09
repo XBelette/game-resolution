@@ -32,7 +32,7 @@ public class Position {
 	// 1 pour les blancs, -1 pour les noirs, 0 pour inoccup�
 	
 	public byte quiEstLa(Coup coup){
-		long adresse = (long)(Math.pow(2, coup.colonne*(H+1)+coup.line));
+		long adresse = 1 << coup.colonne*(H+1)+coup.line;
 		if ((positionBlancs & adresse) != 0)
 			return 1;
 		else if ((positionNoirs & adresse) != 0)
