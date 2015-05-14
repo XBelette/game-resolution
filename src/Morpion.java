@@ -5,7 +5,6 @@ public class Morpion extends Jeu{
 
 
 	final byte k;
-	Position p;
 
 	public Morpion(byte L, byte H, byte k, Position p){
 		super(L, H, p);
@@ -19,12 +18,15 @@ public class Morpion extends Jeu{
 	
 	// 1 pour les blancs, -1 pour les noirs
 	@Override
-	public void joueCoup(Coup coup, Color couleur){
-		if (p.quiEstLa(coup)!=0)
+	public void joueCoup(Coup coup, Couleur couleur){
+		if (p.quiEstLa(coup)!=null){
+			AfficheAffichage.affichePlateau(this);
+			System.out.println("On jouait : " + coup.toString());
 			throw new IllegalArgumentException("Coup interdit");
-		if (couleur == Color.BLANC)
+		}
+		if (couleur == Couleur.BLANC)
 			p.ajouteBlanc(coup);
-		else if (couleur == Color.NOIR)
+		else if (couleur == Couleur.NOIR)
 			p.ajouteNoir(coup);
 		else
 			throw new IllegalArgumentException("Couleur indeterminee");
@@ -43,10 +45,11 @@ public class Morpion extends Jeu{
 		while(coupCourant.line < L){
 			while(coupCourant.colonne < H){
 				// Une priorité pourrait être calculée ici
-				if(p.quiEstLa(coupCourant) == 0) coupsPossibles.add(coupCourant);
+				if(p.quiEstLa(coupCourant) == null) coupsPossibles.add(new Coup(coupCourant.colonne, coupCourant.line));
 				coupCourant.colonne++;
 			}
 			coupCourant.line++;
+			coupCourant.colonne = 0;
 		}
 		
 		
@@ -58,12 +61,12 @@ public class Morpion extends Jeu{
 		// Rappel : retourne true si blanc gagne, false si noir gagne, et null si rien n'est joué
 		Boolean test = null;
 		// Blanc gagne-t-il ?
-		test = p.alignementHorizontal(k, Color.BLANC) || p.alignementVertical(k, Color.BLANC)
-				|| p.alignementDiagonaleAntislash(k, Color.BLANC) || p.alignementDiagonaleSlash(k, Color.BLANC);
+		test = p.alignementHorizontal(k, Couleur.BLANC) || p.alignementVertical(k, Couleur.BLANC)
+				|| p.alignementDiagonaleAntislash(k, Couleur.BLANC) || p.alignementDiagonaleSlash(k, Couleur.BLANC);
 		if(test) return true;
 		// Okay, donc blanc ne gagne pas. Et noir ?
-		test = p.alignementHorizontal(k, Color.NOIR) || p.alignementVertical(k, Color.NOIR)
-				|| p.alignementDiagonaleAntislash(k, Color.NOIR) || p.alignementDiagonaleSlash(k, Color.NOIR);
+		test = p.alignementHorizontal(k, Couleur.NOIR) || p.alignementVertical(k, Couleur.NOIR)
+				|| p.alignementDiagonaleAntislash(k, Couleur.NOIR) || p.alignementDiagonaleSlash(k, Couleur.NOIR);
 		if(test) return false;
 		
 		// Si vraiment personne n'a gagné :

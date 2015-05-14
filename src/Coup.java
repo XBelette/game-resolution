@@ -14,6 +14,10 @@ public class Coup implements Comparable<Coup> {
 	}
 	
 	@Override
+	public String toString(){
+		return "line : "+this.line +", colonne : " +this.colonne;
+	}
+	@Override
 	public int compareTo(Coup arg0) {
 		// There WILL be an heuristic for this later on
 		// There will have some problem for making it dependent on the game, but time for that later.

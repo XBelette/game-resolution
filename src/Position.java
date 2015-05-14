@@ -1,7 +1,7 @@
 
 public class Position {
 
-	// L'origine est en bas � gauche du tableau
+	// L'origine est en bas a gauche du tableau
 	// Si la ligne et la colonne sont entre 0 et L/H, avec l'origine comme ci-dessus,
 	// la case (col, line) a pour adresse le bit col*(H+1) + line
 	
@@ -31,41 +31,44 @@ public class Position {
 	
 	// 1 pour les blancs, -1 pour les noirs, 0 pour inoccup�
 	
-	public byte quiEstLa(Coup coup){
-		long adresse = 1 << coup.colonne*(H+1)+coup.line;
-		if ((positionBlancs & adresse) != 0)
-			return 1;
-		else if ((positionNoirs & adresse) != 0)
-			return -1;
-		return 0;
+	public Couleur quiEstLa(Coup coup){	
+		long adresse = (long)(1) << (coup.colonne*(H+1)+coup.line);
+		if ((positionBlancs & adresse) != 0){
+			return Couleur.BLANC;
+		}
+		else if ((positionNoirs & adresse) == adresse){
+			return Couleur.NOIR;
+		}
+		
+		return null;
 	}
 	
 	public boolean ajouteBlanc(Coup coup){
-		long adresse = 1 << coup.colonne*(H+1)+coup.line;
-		if (quiEstLa(coup) != 0)
+		long adresse = (long)(1) << (coup.colonne*(H+1)+coup.line);
+		if (this.quiEstLa(coup) != null)
 			return false;
 		positionBlancs = (positionBlancs | adresse);
 		return true;
 	}
 	
 	public boolean ajouteNoir(Coup coup){
-		long adresse = 1 << coup.colonne*(H+1)+coup.line;
-		if (quiEstLa(coup) != 0)
+		long adresse = (long)(1) << (coup.colonne*(H+1)+coup.line);
+		if (quiEstLa(coup) != null)
 			return false;
 		positionNoirs= (positionNoirs | adresse);
 		return true;
 	}
 	
 	public boolean remove(Coup coup){
-		long adresse = ~(1 << coup.colonne*(H+1)+coup.line);
-		if(quiEstLa(coup) == 0)
+		long adresse = ~((long)(1) << coup.colonne*(H+1)+coup.line);
+		if(quiEstLa(coup) == null)
 			return false;
 		positionBlancs = (positionBlancs & adresse);
 		positionNoirs = (positionNoirs & adresse);
 		return true;
 	}
 
-	public boolean alignementVertical(byte n, Color color){ 
+	public boolean alignementVertical(byte n, Couleur color){ 
 		// Teste si un alignement vertical de l jetons du joueur color ou plus existe
 		// Notons que cette fonction ne peut fonctionner que pour n >= 1
 		long grilleAlignements;
@@ -90,7 +93,7 @@ public class Position {
 		return grilleAlignements > 0;
 	}
 	
-	public boolean alignementHorizontal(byte n, Color color){
+	public boolean alignementHorizontal(byte n, Couleur color){
 		// Cf supra avec des alignements horizontaux
 		// Change le décalage.
 		long grilleAlignements;
@@ -114,7 +117,7 @@ public class Position {
 		return grilleAlignements > 0;
 	}
 	
-	public boolean alignementDiagonaleAntislash(byte n, Color color){
+	public boolean alignementDiagonaleAntislash(byte n, Couleur color){
 		// Cf supra avec des alignements comme ceci : \
 		// Change le décalage.
 		long grilleAlignements;
@@ -138,7 +141,7 @@ public class Position {
 		return grilleAlignements > 0;
 	}
 	
-	public boolean alignementDiagonaleSlash(byte n, Color color){
+	public boolean alignementDiagonaleSlash(byte n, Couleur color){
 		// Cf supra avec des alignements comme ceci : /
 		// Change le décalage.
 		long grilleAlignements;

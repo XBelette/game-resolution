@@ -20,7 +20,7 @@ public class Affichage extends JPanel {
 		this.L = p.L;
 		this.H = p.H;
 	}
-	
+
 	public Affichage(Jeu j) {
 		setBackground(Color.LIGHT_GRAY);
 		setPreferredSize(new Dimension(600, 600)); // taille du cadre
@@ -28,12 +28,11 @@ public class Affichage extends JPanel {
 		this.L = j.getL();
 		this.H = j.getH();
 	}
-	
 
 	public void dessiner(Graphics g) {
 
 		double pas = (double) (TP) / (Math.max(L, H));
-		
+
 		// Trace des lignes du cube
 		g.setColor(Color.BLACK);
 		g.drawLine(50, 50, (int) Math.round(50 + L * pas), 50);
@@ -49,21 +48,25 @@ public class Affichage extends JPanel {
 
 		// Placement des pions
 		Coup pionPlace = new Coup();
-		byte couleur = 0;
-		while(pionPlace.line < L){
-			while(pionPlace.colonne < H){
+		Couleur couleur;
+		while (pionPlace.colonne < L) {
+			while (pionPlace.line < H) {
 				couleur = p.quiEstLa(pionPlace);
-				if (couleur == 1 || couleur == -1) {
-					if (couleur == 1)
+				if (couleur == Couleur.BLANC || couleur == Couleur.NOIR) {
+					if (couleur == Couleur.BLANC)
 						g.setColor(Color.WHITE);
-					else 
+					else
 						g.setColor(Color.BLACK);
-					
-					g.fillOval((int)(50+pas*pionPlace.line+pas/6),(int)(50+(H-pionPlace.colonne-1)*pas+pas/6),(int)(2*pas/3),(int)(2*pas/3));
+
+					g.fillOval(
+							(int) (50 + pas * pionPlace.colonne + pas / 6),
+							(int) (50 + (H - pionPlace.line - 1) * pas + pas / 6),
+							(int) (2 * pas / 3), (int) (2 * pas / 3));
 				}
-				pionPlace.colonne++;
+				pionPlace.line++;
 			}
-			pionPlace.line++;
+			pionPlace.colonne++;
+			pionPlace.line=0;
 		}
 
 	}

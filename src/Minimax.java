@@ -1,3 +1,5 @@
+import java.util.PriorityQueue;
+
 
 public class Minimax extends Recherche{
 	
@@ -6,47 +8,54 @@ public class Minimax extends Recherche{
 	}
 	
 	@Override
-	public byte recherche(Color tour) {
+	public byte recherche(Couleur tour) {
 		
-		this.aJouer = j.GetCoupsPossibles();
+		PriorityQueue<Coup> aJouer = j.GetCoupsPossibles();
 		Coup coupCourant = new Coup();
 		byte meilleurScore;
 		byte scoreCourant;
 		Boolean gagnant = null;
-		if(tour == Color.BLANC){// Blanc joue
+		if(tour == Couleur.BLANC){// Blanc joue
 			meilleurScore = StatusConstants.LOSE;
 			scoreCourant = StatusConstants.LOSE;
 			while(gagnant == null){
-				coupCourant = this.aJouer.poll();
-				if(coupCourant == null)// Plus de coup à jouer : J'appelle ça un match nul
+				coupCourant = aJouer.poll();
+				if(coupCourant == null){// Plus de coup à jouer : J'appelle ça un match nul
 					return StatusConstants.DRAW;
+				}
 				j.joueCoup(coupCourant, tour);
 				gagnant = j.blancGagne();
-				if(gagnant == true) return StatusConstants.WIN;
+				if(gagnant != null && gagnant == true){
+					j.undo(coupCourant);
+					return StatusConstants.WIN;
+				}
 				else{
 					// Je n'ai pas pu perdre en jouant un coup
 					// Donc gagnant == null
-					scoreCourant = recherche(Color.NOIR);
+					scoreCourant = recherche(Couleur.NOIR);
 					if(scoreCourant > meilleurScore) meilleurScore = scoreCourant;
 				}
 				j.undo(coupCourant);
 			}
 			return meilleurScore;
 		}
-		else if(tour == Color.NOIR){
+		else if(tour == Couleur.NOIR){
 			meilleurScore = StatusConstants.WIN;
 			scoreCourant = StatusConstants.WIN;
 			while(gagnant == null){
-				coupCourant = this.aJouer.poll();
+				coupCourant = aJouer.poll();
 				if(coupCourant == null)// Plus de coup à jouer : J'appelle ça un match nul
 					return StatusConstants.DRAW;
 				j.joueCoup(coupCourant, tour);
 				gagnant = j.blancGagne();
-				if(gagnant == false) return StatusConstants.LOSE;
+				if(gagnant != null && gagnant == false){
+					j.undo(coupCourant);
+					return StatusConstants.LOSE;
+				}
 				else{
 					// Je n'ai pas pu faire gagner blanc en jouant ce coup
 					// Donc gagnant == null
-					scoreCourant = recherche(Color.BLANC);
+					scoreCourant = recherche(Couleur.BLANC);
 					if(scoreCourant < meilleurScore) meilleurScore = scoreCourant;
 				}
 				j.undo(coupCourant);
