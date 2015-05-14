@@ -10,9 +10,8 @@ public class LireEntree {
 		return new Coup((byte)0, (byte) (c.line - 1));
 	}
 
-	public static Jeu LireEntreeStd() {
+	public static Jeu LireEntreeStd(String titre) {
 		Scanner sc = new Scanner(System.in);
-		String titre = sc.nextLine();
 		String ligneTaille = sc.nextLine();
 		String[] dimension = ligneTaille.split("/");
 		byte L = -1;
@@ -62,7 +61,7 @@ public class LireEntree {
 	}
 	
 	public static void main(String[] args) {
-		AfficheAffichage.affichePlateau(LireEntreeStd());
+		AfficheAffichage.affichePlateau(LireEntreeStd(args[0]));
 	}
 
 }
