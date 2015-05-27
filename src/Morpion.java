@@ -4,14 +4,14 @@ import java.util.PriorityQueue;
 public class Morpion extends Jeu{
 
 
-	final byte k;
+	final int k;
 
-	public Morpion(byte L, byte H, byte k, Position p){
+	public Morpion(int L, int H, int k, Position p){
 		super(L, H, p);
 		this.k = k;
 	}
 	
-	public Morpion(byte L, byte H, byte k){
+	public Morpion(int L, int H, int k){
 		super(L, H, new Position(L,H));
 		this.k = k;
 	}
@@ -32,14 +32,13 @@ public class Morpion extends Jeu{
 			throw new IllegalArgumentException("Couleur indeterminee");
 	}
 	
-	@Override
 	public void undo(Coup coup) {
 		// Maybe add some checks ?
 		p.remove(coup);
 	}
 	
 	@Override
-	public PriorityQueue<Coup> GetCoupsPossibles(){
+	public PriorityQueue<Coup> GetCoupsPossibles(Couleur c){
 		PriorityQueue<Coup> coupsPossibles = new PriorityQueue<Coup>();
 		Coup coupCourant = new Coup();
 		while(coupCourant.line < L){
@@ -72,5 +71,16 @@ public class Morpion extends Jeu{
 		// Si vraiment personne n'a gagnÃ© :
 		return null;
 	}
+	
+	public Boolean partieFinie(){ // La partie est finie si :
+		if (blancGagne()!=null) // Noir ou Blanc a aligné ses pions
+			return true;
+		PriorityQueue<Coup> l = GetCoupsPossibles(Couleur.BLANC);
+		if (l.isEmpty()) // Le plateau est plein
+			return true;
+		return false;
+		
+	}
+
 	
 }

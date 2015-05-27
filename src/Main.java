@@ -5,7 +5,8 @@ public class Main {
 		// Eventually there will be arguments.
 		
 		// For testing purposes, for now, it only creates an empty morpion and solves it.
-		Jeu jeuAResoudre = new Puissance4((byte)7,(byte)6);
+		
+		Jeu jeuAResoudre = new Morpion(3,3,3);
 		Recherche algoTeste = new Minimax(jeuAResoudre);
 		byte result = algoTeste.recherche(Couleur.BLANC);
 		
@@ -22,6 +23,6 @@ public class Main {
 		default:
 			System.err.println("What are you trying to make me print ?");
 			break;
-		}
+		}		
 	}
 }

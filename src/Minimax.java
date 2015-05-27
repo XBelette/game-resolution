@@ -10,7 +10,7 @@ public class Minimax extends Recherche{
 	@Override
 	public byte recherche(Couleur tour) {
 		
-		PriorityQueue<Coup> aJouer = j.GetCoupsPossibles();
+		PriorityQueue<Coup> aJouer = j.GetCoupsPossibles(tour);
 		Coup coupCourant = new Coup();
 		byte meilleurScore;
 		byte scoreCourant;
@@ -21,13 +21,17 @@ public class Minimax extends Recherche{
 			while(gagnant == null){
 				coupCourant = aJouer.poll();
 				if(coupCourant == null){// Plus de coup à jouer : J'appelle ça un match nul
-					return StatusConstants.DRAW;
+					return meilleurScore;
 				}
 				j.joueCoup(coupCourant, tour);
 				gagnant = j.blancGagne();
 				if(gagnant != null && gagnant == true){
 					j.undo(coupCourant);
 					return StatusConstants.WIN;
+				} else if (gagnant == null && j.partieFinie() == true){
+					j.undo(coupCourant);
+					if (meilleurScore == StatusConstants.LOSE)
+						meilleurScore = StatusConstants.DRAW;
 				}
 				else{
 					// Je n'ai pas pu perdre en jouant un coup
@@ -45,12 +49,16 @@ public class Minimax extends Recherche{
 			while(gagnant == null){
 				coupCourant = aJouer.poll();
 				if(coupCourant == null)// Plus de coup à jouer : J'appelle ça un match nul
-					return StatusConstants.DRAW;
+					return meilleurScore;
 				j.joueCoup(coupCourant, tour);
 				gagnant = j.blancGagne();
 				if(gagnant != null && gagnant == false){
 					j.undo(coupCourant);
 					return StatusConstants.LOSE;
+				} else if (gagnant == null && j.partieFinie() == true){
+					j.undo(coupCourant);
+					if (meilleurScore == StatusConstants.WIN)
+						meilleurScore = StatusConstants.DRAW;
 				}
 				else{
 					// Je n'ai pas pu faire gagner blanc en jouant ce coup
@@ -64,6 +72,7 @@ public class Minimax extends Recherche{
 		}
 		else throw new IllegalArgumentException("Il y a un troisième joueur");
 	}
-	
-	
 }
+	
+	
+

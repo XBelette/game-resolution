@@ -7,8 +7,8 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class Affichage extends JPanel {
 
-	byte L; // Largeur
-	byte H; // Hauteur
+	int L; // Largeur
+	int H; // Hauteur
 
 	Position p;
 	int TP = 500; // Taille du plateau
@@ -19,14 +19,6 @@ public class Affichage extends JPanel {
 		this.p = p;
 		this.L = p.L;
 		this.H = p.H;
-	}
-
-	public Affichage(Jeu j) {
-		setBackground(Color.LIGHT_GRAY);
-		setPreferredSize(new Dimension(600, 600)); // taille du cadre
-		this.p = j.getp();
-		this.L = j.getL();
-		this.H = j.getH();
 	}
 
 	public void dessiner(Graphics g) {
