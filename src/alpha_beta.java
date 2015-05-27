@@ -19,16 +19,11 @@ public class alpha_beta extends Recherche {
 		
 		PriorityQueue<Coup> aJouer = j.GetCoupsPossibles(tour);
 		Coup coupCourant = new Coup();
-		int meilleurScore;
-		int scoreCourant;
+		int meilleurScore = alpha;
+		int scoreCourant = alpha;
 		boolean gagnant = false;
 		
-		meilleurScore = StatusConstants.LOSE;
-		scoreCourant = StatusConstants.LOSE;
-		while(!gagnant){
-			coupCourant = aJouer.poll();
-			if(coupCourant == null)// Plus de coup à jouer : on a tout regardé !
-				return meilleurScore;
+		while((coupCourant = aJouer.poll()) != null){
 			
 			j.joueCoup(coupCourant, tour);
 			gagnant = j.gagne(tour);
@@ -42,11 +37,13 @@ public class alpha_beta extends Recherche {
 					if (meilleurScore == StatusConstants.LOSE)
 						meilleurScore = StatusConstants.DRAW;
 				}
-				scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -scoreCourant);
-				if(scoreCourant > meilleurScore) meilleurScore = scoreCourant;
+				else{
+					scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -meilleurScore);
+					if(scoreCourant > meilleurScore) meilleurScore = scoreCourant;
+				}
 			}
 			j.undo(coupCourant);
-			if(meilleurScore > beta) return beta;
+			if(meilleurScore > beta) return meilleurScore;
 		}
 		return meilleurScore;
 	}
