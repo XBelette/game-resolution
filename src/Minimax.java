@@ -8,19 +8,19 @@ public class Minimax extends Recherche{
 	}
 	
 	@Override
-	public byte recherche(Couleur tour) {
+	public int recherche(Couleur tour) {
 		
 		PriorityQueue<Coup> aJouer = j.GetCoupsPossibles(tour);
 		Coup coupCourant = new Coup();
-		byte meilleurScore;
-		byte scoreCourant;
+		int meilleurScore;
+		int scoreCourant;
 		Boolean gagnant = null;
 		if(tour == Couleur.BLANC){// Blanc joue
 			meilleurScore = StatusConstants.LOSE;
 			scoreCourant = StatusConstants.LOSE;
 			while(gagnant == null){
 				coupCourant = aJouer.poll();
-				if(coupCourant == null){// Plus de coup à jouer : J'appelle ça un match nul
+				if(coupCourant == null){// Plus de coup à jouer : On a, pour ainsi dire, fait le tour
 					return meilleurScore;
 				}
 				j.joueCoup(coupCourant, tour);
@@ -29,7 +29,6 @@ public class Minimax extends Recherche{
 					j.undo(coupCourant);
 					return StatusConstants.WIN;
 				} else if (gagnant == null && j.partieFinie() == true){
-					j.undo(coupCourant);
 					if (meilleurScore == StatusConstants.LOSE)
 						meilleurScore = StatusConstants.DRAW;
 				}

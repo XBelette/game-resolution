@@ -3,15 +3,9 @@ import java.util.PriorityQueue;
 
 public class alpha_beta extends Recherche {
 	
-	private byte winValue;
-	private byte loseValue;
-	private byte drawValue;
 	
 	public alpha_beta(Jeu j){
 		super(j);
-		winValue = StatusConstants.WIN;
-		loseValue= StatusConstants.LOSE;
-		drawValue= StatusConstants.DRAW;
 	}
 	
 	@Override
@@ -29,31 +23,27 @@ public class alpha_beta extends Recherche {
 		int scoreCourant;
 		boolean gagnant = false;
 		
-		meilleurScore = loseValue;
-		scoreCourant = loseValue;
+		meilleurScore = StatusConstants.LOSE;
+		scoreCourant = StatusConstants.LOSE;
 		while(!gagnant){
 			coupCourant = aJouer.poll();
-			if(coupCourant == null){// Plus de coup à jouer : Il y a deux solutions
-				// Primo, la partie est finie : à ce moment là il faut qu'on signale qu'on est à un match nul
-				if (j.partieFinie()) return drawValue;
-				// Secondo, on a exploré tous les coups de l'adversaire et on a fini notre exploration : on renvoie le meilleur score
-				else return meilleurScore;
-			}
+			if(coupCourant == null)// Plus de coup à jouer : on a tout regardé !
+				return meilleurScore;
+			
 			j.joueCoup(coupCourant, tour);
 			gagnant = j.gagne(tour);
 			if(gagnant){
 				j.undo(coupCourant);
-				return winValue;
+				return StatusConstants.WIN;
 			}
-			else{
-				// Bon, pas gagné. Je change les valeurs de victoire avant de faire rechercher pour la suite.
-				loseValue *= -1;
-				winValue *= -1;
-				scoreCourant = rechercheAlphaBeta(tour.other(), -beta, -scoreCourant);
+			else{// Okay, no luck
+				// But there may be no more moves to play !
+				if(j.partieFinie()){
+					if (meilleurScore == StatusConstants.LOSE)
+						meilleurScore = StatusConstants.DRAW;
+				}
+				scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -scoreCourant);
 				if(scoreCourant > meilleurScore) meilleurScore = scoreCourant;
-				// Before I go on : I must reset values to what they were before
-				loseValue *= -1;
-				winValue *= -1;
 			}
 			j.undo(coupCourant);
 			if(meilleurScore > beta) return beta;

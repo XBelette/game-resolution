@@ -6,9 +6,9 @@ public class Main {
 		
 		// For testing purposes, for now, it only creates an empty morpion and solves it.
 		
-		Jeu jeuAResoudre = new Morpion(3,3,3);
-		Recherche algoTeste = new Minimax(jeuAResoudre);
-		byte result = algoTeste.recherche(Couleur.BLANC);
+		Jeu jeuAResoudre = new Morpion(3,4,4);
+		Recherche algoTeste = new alpha_beta(jeuAResoudre);
+		int result = algoTeste.recherche(Couleur.BLANC);
 		
 		switch(result){
 		case StatusConstants.LOSE:

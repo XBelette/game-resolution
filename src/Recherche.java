@@ -5,5 +5,5 @@ public abstract class Recherche {
 	public Recherche(Jeu j){
 		this.j = j;
 	}
-	abstract public byte recherche(Couleur tour);
+	abstract public int recherche(Couleur tour);
 }

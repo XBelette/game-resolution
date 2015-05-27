@@ -60,13 +60,19 @@ public class Puissance4 extends Jeu{
 		return null;
 	}
 	
-	public Boolean partieFinie(){
-		if (blancGagne()!=null) // Noir ou Blanc a aligné ses pions
+	public boolean partieFinie(){
+		if (blancGagne()!=null) // Noir ou Blanc a alignï¿½ ses pions
 			return true;
 		PriorityQueue<Coup> l = GetCoupsPossibles(Couleur.BLANC);
 		if (l.isEmpty()) // Le plateau est plein
 			return true;
 		return false;
+	}
+	
+	@Override
+	public boolean gagne(Couleur tour) {
+		return p.alignementHorizontal(4, tour) || p.alignementVertical(4, tour)
+		|| p.alignementDiagonaleAntislash(4, tour) || p.alignementDiagonaleSlash(4, tour);
 	}
 
 	public void undo(Coup coup) {

@@ -72,14 +72,20 @@ public class Morpion extends Jeu{
 		return null;
 	}
 	
-	public Boolean partieFinie(){ // La partie est finie si :
-		if (blancGagne()!=null) // Noir ou Blanc a aligné ses pions
+	public boolean partieFinie(){ // La partie est finie si :
+		if (blancGagne()!=null) // Noir ou Blanc a alignï¿½ ses pions
 			return true;
 		PriorityQueue<Coup> l = GetCoupsPossibles(Couleur.BLANC);
 		if (l.isEmpty()) // Le plateau est plein
 			return true;
 		return false;
 		
+	}
+
+	@Override
+	public boolean gagne(Couleur tour) {
+		return p.alignementHorizontal(k, tour) || p.alignementVertical(k, tour)
+		|| p.alignementDiagonaleAntislash(k, tour) || p.alignementDiagonaleSlash(k, tour);
 	}
 
 	
