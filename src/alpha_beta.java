@@ -64,7 +64,7 @@ public class alpha_beta extends Recherche {
 				}
 				else{
 					// Ai-je déjà visité cette position ?
-					if(visited.containsKey(j.p) && visited.getTour(j.p)==tour){
+					if(visited.containsKey(j.p, tour)){
 						if(visited.getBeta(j.p) >= beta) // Le résultat a déjà été calculé avec une meilleure précision
 							scoreCourant = visited.get(j.p);
 						else{// Sinon, je dois recalculer
@@ -91,7 +91,7 @@ public class alpha_beta extends Recherche {
 			// On a aussi peut-être mémoïsé le résultat.
 			if(!skipped){
 				skipped = true;
-				if(visited.containsKey(j.p) && visited.getTour(j.p)==tour){
+				if(visited.containsKey(j.p, tour)){
 					if(visited.getBeta(j.p) >= beta) // Si le résultat a été calculé avec une meilleure précision
 						scoreCourant = visited.get(j.p);
 					else{// Sinon, il suffit de le recalculer

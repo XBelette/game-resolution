@@ -324,10 +324,11 @@ public class Position {
 		return false;
 	}
 
-	public boolean equals(Position p) {
+	public boolean equals(Position p, Couleur nous, Couleur autre) {
 		if (this.positionBlancs == p.positionBlancs
 				&& this.positionNoirs == p.positionNoirs)
 			return true;
+		if(nous != autre) return false;
 		// symétrie verticale
 		Function<Coup,Coup> symVert = new Function<Coup,Coup>() {
 			public Coup apply(Coup c){
@@ -355,8 +356,9 @@ public class Position {
 		return false;
 	}
 
-	public boolean equalsPasPuissance4(Position p) {
-		if(equals(p)) return true;
+	public boolean equalsPasPuissance4(Position p, Couleur nous, Couleur autre) {
+		if(equals(p, nous, autre)) return true;
+		if(nous != autre) return false;
 		if (H != L)
 			return false;
 		// Quart de tour anti-horaire

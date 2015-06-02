@@ -75,13 +75,16 @@ public class CustomHashMap {
 		return (beta==2)?-1:beta;
 	}
 	
-	public boolean containsKey(Position p){
+	public boolean containsKey(Position p, Couleur tour){
 		// Renvoie vrai ssi la position p est encore présente dans la table (elle a pu être remplacée).
-		if(forteSymetrie)
-			return informations[p.hashCode()%informations.length] != null 
-				&& informations[p.hashCode()%informations.length].first.equalsPasPuissance4(p);
-		else
-			return informations[p.hashCode()%informations.length] != null 
-			&& informations[p.hashCode()%informations.length].first.equals(p);
+		if(informations[p.hashCode()%informations.length] != null){
+			if(forteSymetrie)
+				return informations[p.hashCode()%informations.length] != null 
+					&& informations[p.hashCode()%informations.length].first.equalsPasPuissance4(p,getTour(p),tour);
+			else
+				return informations[p.hashCode()%informations.length] != null 
+				&& informations[p.hashCode()%informations.length].first.equals(p,getTour(p),tour);
+			}
+		return false;
 	}
 }

@@ -33,8 +33,8 @@ public class Puissance4 extends Jeu{
 	}
 	
 	public LinkedList<Coup> GetCoupsPossibles(Couleur c){
-		LinkedList<Coup> coupsPossibles = new LinkedList<Coup>();
-		PriorityQueue<CoupCompare> coupsOrdonnes = new PriorityQueue<CoupCompare>();
+		LinkedList<Coup> coups = new LinkedList<Coup>();
+		PriorityQueue<CoupCompare> coupsPossibles = new PriorityQueue<CoupCompare>();
 		CoupCompare coupCourant = new CoupCompare(this,c);
 		// On ignore les lignes, chic au p4 !
 		while(coupCourant.colonne < L){
@@ -45,11 +45,12 @@ public class Puissance4 extends Jeu{
 			// Okay, donc je suis sur la première case où il n'y a personne
 			// Si je suis trop haut en fait je ne peux pas jouer dans cette colonne
 			if(coupCourant.line < H)
-				coupsOrdonnes.add(new CoupCompare(coupCourant.colonne, coupCourant.line, this,c));
+				coupsPossibles.add(new CoupCompare(coupCourant.colonne, coupCourant.line, this,c));
 			coupCourant.colonne++;
 		}
-		coupsPossibles.addAll(coupsOrdonnes);
-		return coupsPossibles;
+		for(CoupCompare co:coupsPossibles)
+			coups.add(new Coup(co));
+		return coups;
 	}
 	
 	

@@ -14,6 +14,11 @@ public class Coup {
 		colonne = col;
 		line = l;
 	}
+	
+	public Coup(Coup c){
+		colonne = c.colonne;
+		line = c.line;
+	}
 
 	@Override
 	public String toString() {

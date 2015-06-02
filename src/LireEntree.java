@@ -11,7 +11,6 @@ public class LireEntree {
 	}
 
 	public static Jeu LireEntreeStd(String titre) {
-		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		String ligneTaille = sc.nextLine();
 		String[] dimension = ligneTaille.split("/");
@@ -27,10 +26,11 @@ public class LireEntree {
 		}
 		Position p = new Position(L, H);
 		StringBuffer sb = new StringBuffer();
-		for (int l = 0; l < H; l++) {
+		while (sc.hasNextLine()) {
 			String a = sc.nextLine();
 			sb.append(a);
 		}
+
 		String s = sb.toString();
 		char[] table = s.toCharArray();
 		Coup c = new Coup((byte) 0, (byte) (H - 1));
@@ -52,10 +52,12 @@ public class LireEntree {
 				curseur++;
 			}
 		}
+		sc.close();
 		if (titre.equals("tictactoe")) {
 			int k = Integer.parseInt(dimension[0]);
 			return new Morpion(L, H, (byte) k, p);
 		} else if (titre.equals("connect4")) {
+			System.err.println("Coucou je suis sorti");
 			return new Puissance4(L, H, p);
 		} else if (titre.equals("othello")) {
 			return new Othello(L, H, p);

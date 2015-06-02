@@ -44,7 +44,8 @@ public class Morpion extends Jeu{
 			coupCourant.colonne = 0;
 		}
 		LinkedList<Coup> coups = new LinkedList<>();
-		coups.addAll(coupsPossibles);
+		for(CoupCompare co:coupsPossibles)
+			coups.add(new Coup(co));
 		
 		return coups;
 	}
