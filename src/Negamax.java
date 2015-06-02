@@ -1,10 +1,14 @@
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 
 public class Negamax extends Recherche {
 	
+	LinkedList<Position> historique;
+	
 	public Negamax(Jeu j){
 		super(j);
+		historique = new LinkedList<>();
 	}
 	
 	@Override
@@ -23,10 +27,11 @@ public class Negamax extends Recherche {
 			if(coupCourant == null){// Plus de coup à jouer : On a, pour ainsi dire, fait le tour
 				return meilleurScore;
 			}
+			historique.add(j.p.copy());
 			j.joueCoup(coupCourant, tour);
 			gagnant = j.gagne(tour);
 			if(gagnant){
-				j.undo(coupCourant);
+				j.undo(historique.pollFirst());
 				return StatusConstants.WIN;
 			}
 			else{
@@ -41,7 +46,7 @@ public class Negamax extends Recherche {
 					if(scoreCourant > meilleurScore) meilleurScore = scoreCourant;
 				}
 			}
-			j.undo(coupCourant);
+			j.undo(historique.pollFirst());
 		}
 		return meilleurScore;
 	}

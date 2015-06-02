@@ -39,21 +39,31 @@ public class Morpion extends Jeu{
 	
 	@Override
 	public PriorityQueue<Coup> GetCoupsPossibles(Couleur c){
-		PriorityQueue<Coup> coupsPossibles = new PriorityQueue<Coup>();
-		Coup coupCourant = new Coup();
-		while(coupCourant.line < L){
-			while(coupCourant.colonne < H){
+		PriorityQueue<CoupCompare> coupsPossibles = new PriorityQueue<>();
+		CoupCompare coupCourant = new CoupCompare(this);
+		while(coupCourant.line < H){
+			while(coupCourant.colonne < L){
 				// Une priorité pourrait être calculée ici
-				if(p.quiEstLa(coupCourant) == null) coupsPossibles.add(new Coup(coupCourant.colonne, coupCourant.line));
+				if(p.quiEstLa(coupCourant) == null) coupsPossibles.add(new CoupCompare(coupCourant.colonne, coupCourant.line,this));
 				coupCourant.colonne++;
 			}
 			coupCourant.line++;
 			coupCourant.colonne = 0;
 		}
+		PriorityQueue<Coup> coups = new PriorityQueue<>();
+		coups.addAll(coupsPossibles);
 		
-		
-		return coupsPossibles;
+		return coups;
 	}
+	
+	/*
+	public static void main(String[] args) {
+		Jeu j = new Morpion(2,2,2);
+		PriorityQueue<Coup> p = j.GetCoupsPossibles(Couleur.BLANC);
+		for (Coup c : p)
+			System.out.println(c);
+	}
+	*/
 	
 	@Override
 	public Boolean blancGagne(){

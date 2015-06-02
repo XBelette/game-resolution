@@ -8,7 +8,7 @@ public class Main {
 
 		// If no option : here is a default test
 		if(args.length < 1){
-			jeuAResoudre = new Morpion(3,3,3);
+			jeuAResoudre = new Puissance4(4,4);
 			algoTeste = new alpha_beta(jeuAResoudre);
 
 		}

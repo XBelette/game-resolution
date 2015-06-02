@@ -10,36 +10,39 @@ public class Othello extends Jeu {
 	public Othello(int L, int H) {
 		super(L, H, new Position(L, H));
 	}
-	
-	public void SituationDeDepart(){ // Place les 4 pions qui permettent de commencer a jouer
-		if (H <=1 || L<=1)
+
+	public void SituationDeDepart() { // Place les 4 pions qui permettent de
+										// commencer a jouer
+		if (H <= 1 || L <= 1)
 			throw new IllegalArgumentException("Plateau trop petit");
-		int l = L/2;
-		int h = H/2;
-		p.ajouteBlanc(new Coup(l,h));
-		p.ajouteBlanc(new Coup(l-1,h-1));
-		p.ajouteNoir(new Coup(l,h-1));
-		p.ajouteNoir(new Coup(l-1,h));
+		int l = L / 2;
+		int h = H / 2;
+		p.ajouteBlanc(new Coup(l, h));
+		p.ajouteBlanc(new Coup(l - 1, h - 1));
+		p.ajouteNoir(new Coup(l, h - 1));
+		p.ajouteNoir(new Coup(l - 1, h));
 	}
 
 	@Override
 	public PriorityQueue<Coup> GetCoupsPossibles(Couleur c) {
-		PriorityQueue<Coup> coupsPossibles = new PriorityQueue<Coup>();
-		Coup coupCourant = new Coup();
-		while (coupCourant.line < L) {
-			while (coupCourant.colonne < H) {
+		PriorityQueue<CoupCompare> coupsPossibles = new PriorityQueue<>();
+		CoupCompare coupCourant = new CoupCompare(this);
+		while (coupCourant.line < H) {
+			while (coupCourant.colonne < L) {
 				// Une priorité pourrait être calculée ici
 				if (p.quiEstLa(coupCourant) == null
-						&& coupPossible(coupCourant, c)!=null)
-					coupsPossibles.add(new Coup(coupCourant.colonne,
-							coupCourant.line));
+						&& coupPossible(coupCourant, c) != null)
+					coupsPossibles.add(new CoupCompare(coupCourant.colonne,
+							coupCourant.line,this));
 				coupCourant.colonne++;
 			}
 			coupCourant.line++;
 			coupCourant.colonne = 0;
 		}
-
-		return coupsPossibles;
+		PriorityQueue<Coup> coups = new PriorityQueue<>();
+		coups.addAll(coupsPossibles);
+		
+		return (PriorityQueue<Coup>) coups;
 
 	}
 
@@ -56,7 +59,7 @@ public class Othello extends Jeu {
 	}
 
 	@Override
-	public Boolean partieFinie() {
+	public boolean partieFinie() {
 		if (GetCoupsPossibles(Couleur.BLANC).isEmpty()
 				&& GetCoupsPossibles(Couleur.NOIR).isEmpty())
 			return true;
@@ -71,9 +74,9 @@ public class Othello extends Jeu {
 		int H = this.getH();
 		int L = this.getL();
 		if (p.quiEstLa(coup) != null) { // on ne peut pas jouer sur une case
-										// deja occup�e
+										// deja occup�e
 			AfficheAffichage.affichePlateau(this);
-			throw new IllegalArgumentException("Coup interdit : "+ coup);
+			throw new IllegalArgumentException("Coup interdit : " + coup);
 		}
 		LinkedList<Coup> changent = new LinkedList<>();
 		for (Voisinage v : Voisinage.values()) {
@@ -88,7 +91,7 @@ public class Othello extends Jeu {
 				changent.addAll(candidats);
 		}
 		if (changent.isEmpty()) // aucun pion n'est modifie, le coup est
-									// interdit
+								// interdit
 			return null;
 		return changent;
 	}
@@ -108,9 +111,14 @@ public class Othello extends Jeu {
 			p.changeCouleur(c);
 	}
 
+
 	@Override
-	public void undo(Coup c) {
-		return;
+	public boolean gagne(Couleur tour) {
+		if (!partieFinie())
+			return false;
+		if (this.getp().Nb(tour) > this.getp().Nb(tour.other()))
+			return true;
+		return false;
 	}
 
 }
