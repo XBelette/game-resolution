@@ -337,6 +337,13 @@ public class Position {
 		};
 		if (estInvariantParBij(p,symVert))
 			return true;
+		return false;
+
+	}
+
+	public boolean equalsPasPuissance4(Position p, Couleur nous, Couleur autre) {
+		if(equals(p, nous, autre)) return true;
+		if(nous != autre) return false;
 		// symetrie horizontale
 		Function<Coup,Coup> symHor = new Function<Coup,Coup>() {
 			public Coup apply(Coup c){
@@ -353,46 +360,41 @@ public class Position {
 		};
 		if (estInvariantParBij(p,demiTr))
 			return true;
-		return false;
-	}
-
-	public boolean equalsPasPuissance4(Position p, Couleur nous, Couleur autre) {
-		if(equals(p, nous, autre)) return true;
-		if(nous != autre) return false;
-		if (H != L)
-			return false;
-		// Quart de tour anti-horaire
-		Function<Coup,Coup> quartTrGauche = new Function<Coup,Coup>() {
-			public Coup apply(Coup c){
-				return new Coup(L-1-c.line,c.colonne);
-			}
-		};
-		if (estInvariantParBij(p,quartTrGauche))
-			return true;
-		// Quart de tour horaire
-		Function<Coup,Coup> quartTrDroite = new Function<Coup,Coup>() {
-			public Coup apply(Coup c){
-				return new Coup(c.line,H-1-c.colonne);
-			}
-		};
-		if (estInvariantParBij(p,quartTrDroite))
-			return true;
-		// Symétrie slash
-		Function<Coup,Coup> symSlash = new Function<Coup,Coup>() {
-			public Coup apply(Coup c){
-				return new Coup(c.line,c.colonne);
-			}
-		};
-		if (estInvariantParBij(p,symSlash))
-			return true;
-		// Symétrie antislash
-		Function<Coup,Coup> symAntiSlash = new Function<Coup,Coup>() {
-			public Coup apply(Coup c){
-				return new Coup(L-1-c.line,H-1-c.colonne);
-			}
-		};
-		if (estInvariantParBij(p,symAntiSlash))
-			return true;
+		if(H==L){// Symétries supplémentaires si H == L
+			// Quart de tour anti-horaire
+			Function<Coup,Coup> quartTrGauche = new Function<Coup,Coup>() {
+				public Coup apply(Coup c){
+					return new Coup(L-1-c.line,c.colonne);
+				}
+			};
+			if (estInvariantParBij(p,quartTrGauche))
+				return true;
+			// Quart de tour horaire
+			Function<Coup,Coup> quartTrDroite = new Function<Coup,Coup>() {
+				public Coup apply(Coup c){
+					return new Coup(c.line,H-1-c.colonne);
+				}
+			};
+			if (estInvariantParBij(p,quartTrDroite))
+				return true;
+			// Symétrie slash
+			Function<Coup,Coup> symSlash = new Function<Coup,Coup>() {
+				public Coup apply(Coup c){
+					return new Coup(c.line,c.colonne);
+				}
+			};
+			if (estInvariantParBij(p,symSlash))
+				return true;
+			// Symétrie antislash
+			Function<Coup,Coup> symAntiSlash = new Function<Coup,Coup>() {
+				public Coup apply(Coup c){
+					return new Coup(L-1-c.line,H-1-c.colonne);
+				}
+			};
+			
+			if (estInvariantParBij(p,symAntiSlash))
+				return true;
+		}
 		return false;
 	}
 
