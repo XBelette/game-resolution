@@ -62,19 +62,19 @@ public class alpha_beta extends Recherche {
 				}
 				else{
 					// Have I been in this position yet ?
-					if(visited.containsKey(j.p)){
-						if(visited.getBeta(j.p) >= beta) // Déjà calculé avec une meilleure précision
+					if(visited.containsKey(j.p) && visited.getTour(j.p)==tour){
+						if(visited.getBeta(j.p) >= beta) // Result already computed with better precision
 							scoreCourant = visited.get(j.p);
 						else{// Sinon, ben je dois recalculer
 							scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -meilleurScore);
-							visited.put(j.p.copy(), scoreCourant, meilleurScore, beta);
+							visited.put(j.p.copy(), scoreCourant, meilleurScore, beta, tour);
 						}
 						
 					}
 					else{
 						// Great, new place !
 						scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -meilleurScore);
-						visited.put(j.p.copy(), scoreCourant, alpha, beta);
+						visited.put(j.p.copy(), scoreCourant, alpha, beta, tour);
 					}
 					if(scoreCourant > meilleurScore) meilleurScore = scoreCourant;
 				}
@@ -85,9 +85,25 @@ public class alpha_beta extends Recherche {
 				return meilleurScore;
 			}
 		}
-		if(premierCoup){
+		if(premierCoup){// Othello specific case : player may replay if opponent has no move left.
+			// Also, result might have been memoized.
+			if(visited.containsKey(j.p) && visited.getTour(j.p)==tour){
+				if(visited.getBeta(j.p) >= beta) // Result already computed with better precision
+					scoreCourant = visited.get(j.p);
+				else{// otherwise, I'll just compute it again
+					scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -meilleurScore);
+					visited.put(j.p.copy(), scoreCourant, meilleurScore, beta, tour);
+				}
+				
+			}
+			else{
+				// Okay, so result was not memoized (or memoized for the other guy)
+				scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -meilleurScore);
+				visited.put(j.p.copy(), scoreCourant, alpha, beta, tour);
+			}
+			scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -alpha);
 			j.p.diminueProfondeur();
-			return -rechercheAlphaBeta(tour.other(), -beta, -alpha);
+			return (scoreCourant>meilleurScore)?scoreCourant:meilleurScore;
 		}
 		j.p.diminueProfondeur();
 		return meilleurScore;

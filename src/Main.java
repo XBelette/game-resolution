@@ -8,7 +8,8 @@ public class Main {
 
 		// If no option : here is a default test
 		if(args.length < 1){
-			jeuAResoudre = new Puissance4(4,4);
+			jeuAResoudre = new Othello(6,6);
+			((Othello) jeuAResoudre).SituationDeDepart();
 			algoTeste = new alpha_beta(jeuAResoudre);
 
 		}
@@ -22,7 +23,7 @@ public class Main {
 		long end = System.currentTimeMillis();
 		switch(result){
 		case StatusConstants.LOSE:
-			System.out.println("LOSE");
+			System.out.println("LOSS");
 			break;
 		case StatusConstants.DRAW:
 			System.out.println("DRAW");

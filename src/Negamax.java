@@ -13,20 +13,36 @@ public class Negamax extends Recherche {
 	
 	@Override
 	public int recherche(Couleur tour) {
-		// TODO Auto-generated method stub
+		
+		// Only initial call : checking if the game is over.
+		if (j.partieFinie()) {
+			boolean BlancGagne = j.gagne(Couleur.BLANC);
+			boolean NoirGagne = j.gagne(Couleur.NOIR);
+			if (BlancGagne && NoirGagne)
+				throw new IllegalArgumentException("Invalid Position");
+			if (BlancGagne)
+				return StatusConstants.WIN;
+			if (NoirGagne)
+				return StatusConstants.LOSE;
+			return StatusConstants.DRAW;
+		}
+		
+		// If not, well, time to play !
+		return rechercheAux(tour);
+		
+	}
+	
+	public int rechercheAux(Couleur tour){
+		j.p.augmenteProfondeur();
 		PriorityQueue<Coup> aJouer = j.GetCoupsPossibles(tour);
 		Coup coupCourant = new Coup();
-		int meilleurScore;
-		int scoreCourant;
 		boolean gagnant = false;
+		boolean premierCoup = true;
 		
-		meilleurScore = StatusConstants.LOSE;
-		scoreCourant = StatusConstants.LOSE;
-		while(!gagnant){
-			coupCourant = aJouer.poll();
-			if(coupCourant == null){// Plus de coup à jouer : On a, pour ainsi dire, fait le tour
-				return meilleurScore;
-			}
+		int meilleurScore = StatusConstants.LOSE;
+		int scoreCourant = StatusConstants.LOSE;
+		while((coupCourant = aJouer.poll()) != null){
+			premierCoup = false;
 			historique.add(j.p.copy());
 			j.joueCoup(coupCourant, tour);
 			gagnant = j.gagne(tour);
@@ -42,12 +58,18 @@ public class Negamax extends Recherche {
 						meilleurScore = StatusConstants.DRAW;
 				}
 				else{
-					scoreCourant = -recherche(tour.other());
+					scoreCourant = -rechercheAux(tour.other());
 					if(scoreCourant > meilleurScore) meilleurScore = scoreCourant;
 				}
 			}
 			j.undo(historique.pollFirst());
 		}
+		if(premierCoup){// Othello specific case : if there is no move to play initially, the other player may play next
+			meilleurScore= -rechercheAux(tour.other());
+			j.p.diminueProfondeur();
+			return meilleurScore;
+		}
+		j.p.diminueProfondeur();
 		return meilleurScore;
 	}
 }
