@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+
 public class CoupCompare extends Coup implements Comparable<Coup> {
 
 	Jeu j; // m pour Morpion, o pour Othello, p pour Puissance4
@@ -69,8 +71,11 @@ public class CoupCompare extends Coup implements Comparable<Coup> {
 				return -1;
 			else if (isOnTheEdge(that,j))
 				return 1;
-			else
-				return 0;
+			else{
+				LinkedList<Coup> coupsThis = ((Othello) j).coupPossible(this, player);
+				LinkedList<Coup> coupsThat = ((Othello) j).coupPossible(that, player);
+				return coupsThis.size()-coupsThat.size();
+			}
 		}
 		return 0;
 	}
