@@ -1,15 +1,14 @@
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 
 
 public class alpha_beta extends Recherche {
 	CustomHashMap visited;
 	LinkedList<Position> historique; // Indispensable pour othello.
-	boolean skipped; // true if a turn was skipped
+	boolean skipped;
 	
 	public alpha_beta(Jeu j){
 		super(j);
-		visited = new CustomHashMap(10000000);
+		visited = new CustomHashMap(10000000, j);
 		historique = new LinkedList<>();
 		skipped = false;
 	}
@@ -19,7 +18,7 @@ public class alpha_beta extends Recherche {
 		// J'ai besoin de passer alpha et beta en tant que paramètres modifiables de ma fonction de recherche
 		// On a donc ici seulement le premier appel
 		
-		// Avant d'aller voir plus loin, il faut que je checke si la partie n'est pas finie dès le départ.
+		// Avant d'aller voir plus loin, il faut que je vérifie si la partie n'est pas finie dès le départ.
 		if (j.partieFinie()) {
 			boolean BlancGagne = j.gagne(Couleur.BLANC);
 			boolean NoirGagne = j.gagne(Couleur.NOIR);
@@ -38,7 +37,7 @@ public class alpha_beta extends Recherche {
 	
 	public int rechercheAlphaBeta(Couleur tour, int alpha, int beta){
 		
-		PriorityQueue<Coup> aJouer = j.GetCoupsPossibles(tour);
+		LinkedList<Coup> aJouer = j.GetCoupsPossibles(tour);
 		j.p.augmenteProfondeur(); // Je suis plus profond qu'avant !
 		Coup coupCourant = new Coup();
 		int meilleurScore = alpha;
@@ -57,25 +56,25 @@ public class alpha_beta extends Recherche {
 				j.p.diminueProfondeur();
 				return StatusConstants.WIN;
 			}
-			else{// Okay, no luck
-				// But there may be no more moves to play !
+			else{// Okay, pas de chance
+				// Mais il n'y a peut-être plus de coups à jouer !
 				if(j.partieFinie()){
 					if (meilleurScore == StatusConstants.LOSE)
 						meilleurScore = StatusConstants.DRAW;
 				}
 				else{
-					// Have I been in this position yet ?
+					// Ai-je déjà visité cette position ?
 					if(visited.containsKey(j.p) && visited.getTour(j.p)==tour){
-						if(visited.getBeta(j.p) >= beta) // Result already computed with better precision
+						if(visited.getBeta(j.p) >= beta) // Le résultat a déjà été calculé avec une meilleure précision
 							scoreCourant = visited.get(j.p);
-						else{// Sinon, ben je dois recalculer
+						else{// Sinon, je dois recalculer
 							scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -meilleurScore);
 							visited.put(j.p.copy(), scoreCourant, meilleurScore, beta, tour);
 						}
 						
 					}
 					else{
-						// Great, new place !
+						// Super, une position inconnue !
 						scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -meilleurScore);
 						visited.put(j.p.copy(), scoreCourant, alpha, beta, tour);
 					}
@@ -88,28 +87,28 @@ public class alpha_beta extends Recherche {
 				return meilleurScore;
 			}
 		}
-		if(premierCoup){// Othello specific case : player may replay if opponent has no move left.
-			// Also, result might have been memoized.
+		if(premierCoup){// Cas spécifique pour Othello : Si un joueur ne peut pas jouer, il rend la main a son adversaire
+			// On a aussi peut-être mémoïsé le résultat.
 			if(!skipped){
 				skipped = true;
 				if(visited.containsKey(j.p) && visited.getTour(j.p)==tour){
-					if(visited.getBeta(j.p) >= beta) // Result already computed with better precision
+					if(visited.getBeta(j.p) >= beta) // Si le résultat a été calculé avec une meilleure précision
 						scoreCourant = visited.get(j.p);
-					else{// otherwise, I'll just compute it again
+					else{// Sinon, il suffit de le recalculer
 						scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -meilleurScore);
 						visited.put(j.p.copy(), scoreCourant, meilleurScore, beta, tour);
 					}
 					
 				}
 				else{
-					// Okay, so result was not memoized (or memoized for the other guy)
+					// Bon, on dirait qu'on avait pas mémoïsé le résultat en fait.
 					scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -meilleurScore);
 					visited.put(j.p.copy(), scoreCourant, alpha, beta, tour);
 				}
 				scoreCourant = -rechercheAlphaBeta(tour.other(), -beta, -alpha);
 				j.p.diminueProfondeur();
 				return (scoreCourant>meilleurScore)?scoreCourant:meilleurScore;
-			}// Nothing to do really if I've already skipped a turn, game is over. Swinging back next score.
+			}// Si on a déjà sauté un tour, il ne reste plus grand chose à faire. Simplement terminer.
 		}
 		j.p.diminueProfondeur();
 		return meilleurScore;

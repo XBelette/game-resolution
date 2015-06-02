@@ -1,4 +1,4 @@
-import java.util.PriorityQueue;
+import java.util.LinkedList;
 
 
 public abstract class Jeu {
@@ -23,10 +23,9 @@ public abstract class Jeu {
 		return p;
 	}
 	
-	abstract public PriorityQueue<Coup> GetCoupsPossibles(Couleur c);
-	abstract public Boolean blancGagne(); // renvoie true si blanc a gagné, false si noir a gagné, et null sinon (match nul ou pas encore sûr)
-	abstract public boolean gagne(Couleur tour); // renvoie true si le joueur a gagn�, false sinon
-	abstract public boolean partieFinie();
+	abstract public LinkedList<Coup> GetCoupsPossibles(Couleur c);
+	abstract public boolean partieFinie(); // renvoie true si la partie est finie, false sinon
+	abstract public boolean gagne(Couleur tour); // renvoie true si le joueur a gagné, false sinon
 	abstract public void joueCoup(Coup coup, Couleur couleur);
 	public void undo(Position q){
 		this.p = q;

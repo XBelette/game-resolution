@@ -1,7 +1,9 @@
+import java.util.function.Function;
+
 public class Position {
 
-	// L'origine est en bas a gauche du tableau
-	// Si la ligne et la colonne sont entre 0 et L/H, avec l'origine comme
+	// L'origine est en bas à gauche du tableau
+	// Si la ligne et la colonne sont entre 0 et L ou H, avec l'origine comme
 	// ci-dessus,
 	// la case (col, line) a pour adresse le bit col*(H+1) + line
 
@@ -10,7 +12,7 @@ public class Position {
 
 	private long positionBlancs;
 	private long positionNoirs;
-	
+
 	private int profondeur;
 
 	public Position(int L, int H, long pB, long pN) {
@@ -20,7 +22,7 @@ public class Position {
 		this.positionNoirs = pN;
 		this.profondeur = 0;
 	}
-	
+
 	public Position(int L, int H, long pB, long pN, int pr) {
 		this.H = H;
 		this.L = L;
@@ -36,23 +38,24 @@ public class Position {
 		this.positionNoirs = 0;
 		this.profondeur = 0;
 	}
-	
-	public void augmenteProfondeur(){
+
+	public void augmenteProfondeur() {
 		profondeur++;
 	}
-	
-	public void diminueProfondeur(){
+
+	public void diminueProfondeur() {
 		profondeur--;
 	}
-	
-	public int getProfondeur(){
+
+	public int getProfondeur() {
 		return this.profondeur;
 	}
 
-	public Position copy(){
-		return new Position(this.L, this.H, this.positionBlancs, this.positionNoirs, this.profondeur);
+	public Position copy() {
+		return new Position(this.L, this.H, this.positionBlancs,
+				this.positionNoirs, this.profondeur);
 	}
-	
+
 	public boolean isEmpty() {
 		return (positionBlancs == 0 && positionNoirs == 0);
 	}
@@ -111,12 +114,14 @@ public class Position {
 		return true;
 	}
 	
-	public int maxAlign(Coup coup, Couleur c){// Returns longest alignment of which Coup coup is part of.
+	public int maxAlign(Coup coup, Couleur c){// Renvoie le plus long alignement dont le pion à la position coup fait partie
 		long adresse = ((long)1 << coup.colonne * (H + 1) + coup.line);
 		long grilleAlignementsVerticaux;
 		long grilleAlignementsHorizontaux;
 		long grilleAlignementsSlash;
 		long grilleAlignementsAntislash;
+		// Il y a plus d'un endroit où regarder pour vérifier les alignements
+		// On sépare, comme pour les alignements, entre vertical (V), horizontal (H), etc.
 		long placesH;
 		long placesV;
 		long placesS;
@@ -140,7 +145,7 @@ public class Position {
 			throw new IllegalArgumentException(
 					"Erreur dans les fonctions d'alignements : il y a une troisième couleur !");
 		}
-		// Now to get that maximum length.
+		// Maintenant, calculons cette longueur maximale
 		grilleAlignementsVerticaux = grilleAlignementsVerticaux
 				& (grilleAlignementsVerticaux >> (long) (1));
 		grilleAlignementsHorizontaux = grilleAlignementsHorizontaux
@@ -149,16 +154,16 @@ public class Position {
 				& (grilleAlignementsAntislash >> (long) H);
 		grilleAlignementsSlash = grilleAlignementsSlash
 				& (grilleAlignementsSlash >> (long) (H + 2));
-		long places = adresse; //There are more than one place to look at to see if the alignment gets longer
-		places = places | places >> (long) 1 // address might be the upper limit in a vertical alignment
-						| places >> (long) (H+1) // Or the right hand limit in a horizontal alignment
-						| places >> (long) H	// Or the lower-right limit in a \ like alignment
-						| places >> (long) (H+2); // Or the upper-right limit in a / like alignment
-		stillAligned = (places & (grilleAlignementsVerticaux | grilleAlignementsHorizontaux
-								| grilleAlignementsAntislash | grilleAlignementsSlash)) >= 1;
+		placesV = adresse | adresse >> (long) 1; // l'adresse peut être en haut d'un alignement vertical
+		placesH = adresse | adresse >> (long) (H+1); // Ou à droite d'un alignement horizontal
+		placesA = adresse | adresse >> (long) H;	// Ou en bas à droite d'un alignement comme \
+		placesS = adresse | adresse >> (long) (H+2); // Ou en haut à droite d'un alignement comme /
+		stillAligned = ((placesV & grilleAlignementsVerticaux) |(placesV & grilleAlignementsHorizontaux)
+				|(placesA & grilleAlignementsAntislash) | (placesS & grilleAlignementsSlash)) >= 1;
 		while(stillAligned){
+			// Youpi ! L'alignement est plus long !
 			maxLength++;
-			// I'll need to split places the same way I split it for alignments
+			// D'abord mettre à jour les endroits où regarder
 			placesH=adresse;
 			placesV=adresse;
 			placesS=adresse;
@@ -169,9 +174,8 @@ public class Position {
 				placesS = placesS | placesS >> (long) H+2;
 				placesA = placesA | placesA >> (long) H;
 			}
-			places = adresse | placesH | placesV | placesS | placesA;
 			
-			// Also updating alignments :
+			// Ensuite mettre à jour les alignements
 			grilleAlignementsVerticaux = grilleAlignementsVerticaux
 					& (grilleAlignementsVerticaux >> (long) (1));
 			grilleAlignementsHorizontaux = grilleAlignementsHorizontaux
@@ -180,12 +184,13 @@ public class Position {
 					& (grilleAlignementsAntislash >> (long) H);
 			grilleAlignementsSlash = grilleAlignementsSlash
 					& (grilleAlignementsSlash >> (long) (H + 2));
-			// Okay, reasonable places ?
+			// Et voir s'il y a un alignement plus long.
 			stillAligned = ((placesV & grilleAlignementsVerticaux) |(placesV & grilleAlignementsHorizontaux)
 					|(placesA & grilleAlignementsAntislash) | (placesS & grilleAlignementsSlash)) >= 1;
 		}
 		return maxLength;
 	}
+
 	public boolean alignementVertical(int n, Couleur color) {
 		// Teste si un alignement vertical de l jetons du joueur color ou plus
 		// existe
@@ -300,190 +305,100 @@ public class Position {
 			return Long.bitCount(positionNoirs);
 		return -1;
 	}
-
-	// renvoie 1 si deux positions sont �quivalentes
-	// renvoie -1 si deux positions sont �quivalentes en �changeant les blancs
-	// et les noirs
-	// renvoie 0 sinon
-	public int equals(Position p) {
-		if (this.positionBlancs == p.positionBlancs
-				&& this.positionNoirs == p.positionNoirs)
-			return 1;
-		if (this.positionBlancs == p.positionNoirs
-				&& this.positionNoirs == p.positionBlancs)
-			return -1;
-		// symetrie verticale
+	
+	public boolean estInvariantParBij(Position p, Function<Coup,Coup> bij){
 		boolean meme = true;
-		boolean oppose = true;
 		for (int col = 0; col < L; col++)
 			for (int line = 0; line < H; line++) {
-				Couleur c1 = this.quiEstLa(new Coup(col, line));
-				Couleur c2 = p.quiEstLa(new Coup(L - 1 - col, line));
-				if ((c1 == null && c2 != null) || (c1 != null && c2 == null)) {
+				Coup cp = new Coup(col,line);
+				Couleur c1 = this.quiEstLa(cp);
+				Couleur c2 = p.quiEstLa(bij.apply(cp));
+				if ((c1 == null && c2 != null) || (c1 != null && c2 == null)
+						|| c1 != c2) {
 					meme = false;
-					oppose = false;
 					break;
-				} else if (c1 == c2 && c1 != null)
-					oppose = false;
-				else if (c1 != c2)
-					meme = false;
-				if (!meme && !oppose)
-					break;
-			}
-			
-		if (meme)
-			return 1;
-		if (oppose)
-			return -1;
-		// symetrie horizontale
-		meme = true;
-		oppose = true;
-		for (int col = 0; col < L; col++)
-			for (int line = 0; line < H; line++) {
-				Couleur c1 = this.quiEstLa(new Coup(col, line));
-				Couleur c2 = p.quiEstLa(new Coup(col, L - 1 - line));
-				if ((c1 == null && c2 != null) || (c1 != null && c2 == null)) {
-					meme = false;
-					oppose = false;
-					break;
-				} else if (c1 == c2 && c1 != null)
-					oppose = false;
-				else if (c1 != c2)
-					meme = false;
-				if (!meme && !oppose)
-					break;
+				}
 			}
 		if (meme)
-			return 1;
-		if (oppose)
-			return -1;
-		// combinaison des deux symetries
-		meme = true;
-		oppose = true;
-		for (int col = 0; col < L; col++)
-			for (int line = 0; line < H; line++) {
-				Couleur c1 = this.quiEstLa(new Coup(col, line));
-				Couleur c2 = p.quiEstLa(new Coup(L - 1 - col, L - 1 - line));
-				if ((c1 == null && c2 != null) || (c1 != null && c2 == null)) {
-					meme = false;
-					oppose = false;
-					break;
-				} else if (c1 == c2 && c1 != null)
-					oppose = false;
-				else if (c1 != c2)
-					meme = false;
-				if (!meme && !oppose)
-					break;
-			}
-		if (meme)
-			return 1;
-		if (oppose)
-			return -1;
-		// Si H == L
-		if (H == L) {
-			// Quart de tour anti-horaire
-			meme = true;
-			oppose = true;
-			for (int col = 0; col < L; col++)
-				for (int line = 0; line < H; line++) {
-					Couleur c1 = this.quiEstLa(new Coup(col, line));
-					Couleur c2 = p.quiEstLa(new Coup(L - 1 - line, col));
-					if ((c1 == null && c2 != null)
-							|| (c1 != null && c2 == null)) {
-						meme = false;
-						oppose = false;
-						break;
-					} else if (c1 == c2 && c1 != null)
-						oppose = false;
-					else if (c1 != c2)
-						meme = false;
-					if (!meme && !oppose)
-						break;
-				}
-			if (meme)
-				return 1;
-			if (oppose)
-				return -1;
-			// Quart de tour horaire
-			meme = true;
-			oppose = true;
-			for (int col = 0; col < L; col++)
-				for (int line = 0; line < H; line++) {
-					Couleur c1 = this.quiEstLa(new Coup(col, line));
-					Couleur c2 = p.quiEstLa(new Coup(line, H - 1 - col));
-					if ((c1 == null && c2 != null)
-							|| (c1 != null && c2 == null)) {
-						meme = false;
-						oppose = false;
-						break;
-					} else if (c1 == c2 && c1 != null)
-						oppose = false;
-					else if (c1 != c2)
-						meme = false;
-					if (!meme && !oppose)
-						break;
-				}
-			if (meme)
-				return 1;
-			if (oppose)
-				return -1;
-			// Sym�trie slash
-			meme = true;
-			oppose = true;
-			for (int col = 0; col < L; col++)
-				for (int line = 0; line < H; line++) {
-					Couleur c1 = this.quiEstLa(new Coup(col, line));
-					Couleur c2 = p.quiEstLa(new Coup(line, col));
-					if ((c1 == null && c2 != null)
-							|| (c1 != null && c2 == null)) {
-						meme = false;
-						oppose = false;
-						break;
-					} else if (c1 == c2 && c1 != null)
-						oppose = false;
-					else if (c1 != c2)
-						meme = false;
-					if (!meme && !oppose)
-						break;
-				}
-			if (meme)
-				return 1;
-			if (oppose)
-				return -1;
-			// Sym�trie antislash
-			meme = true;
-			oppose = true;
-			for (int col = 0; col < L; col++)
-				for (int line = 0; line < H;line++) {
-					Couleur c1 = this.quiEstLa(new Coup(col, line));
-					Couleur c2 = p
-							.quiEstLa(new Coup(L - 1 - line, H - 1 - col));
-					if ((c1 == null && c2 != null)
-							|| (c1 != null && c2 == null)) {
-						meme = false;
-						oppose = false;
-						break;
-					} else if (c1 == c2 && c1 != null)
-						oppose = false;
-					else if (c1 != c2)
-						meme = false;
-					if (!meme && !oppose)
-						break;
-				}
-			if (meme)
-				return 1;
-			if (oppose)
-				return -1;
-		}
-		return 0;
-
+			return true;
+		return false;
 	}
 
-	public String toString(){
+	public boolean equals(Position p) {
+		if (this.positionBlancs == p.positionBlancs
+				&& this.positionNoirs == p.positionNoirs)
+			return true;
+		// symétrie verticale
+		Function<Coup,Coup> symVert = new Function<Coup,Coup>() {
+			public Coup apply(Coup c){
+				return new Coup(L-1-c.colonne,c.line);
+			}
+		};
+		if (estInvariantParBij(p,symVert))
+			return true;
+		// symetrie horizontale
+		Function<Coup,Coup> symHor = new Function<Coup,Coup>() {
+			public Coup apply(Coup c){
+				return new Coup(c.colonne,L-1-c.line);
+			}
+		};
+		if (estInvariantParBij(p,symHor))
+			return true;
+		// combinaison des deux symétries
+		Function<Coup,Coup> demiTr = new Function<Coup,Coup>() {
+			public Coup apply(Coup c){
+				return new Coup(L-1-c.colonne,L-1-c.line);
+			}
+		};
+		if (estInvariantParBij(p,demiTr))
+			return true;
+		return false;
+	}
+
+	public boolean equalsPasPuissance4(Position p) {
+		if(equals(p)) return true;
+		if (H != L)
+			return false;
+		// Quart de tour anti-horaire
+		Function<Coup,Coup> quartTrGauche = new Function<Coup,Coup>() {
+			public Coup apply(Coup c){
+				return new Coup(L-1-c.line,c.colonne);
+			}
+		};
+		if (estInvariantParBij(p,quartTrGauche))
+			return true;
+		// Quart de tour horaire
+		Function<Coup,Coup> quartTrDroite = new Function<Coup,Coup>() {
+			public Coup apply(Coup c){
+				return new Coup(c.line,H-1-c.colonne);
+			}
+		};
+		if (estInvariantParBij(p,quartTrDroite))
+			return true;
+		// Symétrie slash
+		Function<Coup,Coup> symSlash = new Function<Coup,Coup>() {
+			public Coup apply(Coup c){
+				return new Coup(c.line,c.colonne);
+			}
+		};
+		if (estInvariantParBij(p,symSlash))
+			return true;
+		// Symétrie antislash
+		Function<Coup,Coup> symAntiSlash = new Function<Coup,Coup>() {
+			public Coup apply(Coup c){
+				return new Coup(L-1-c.line,H-1-c.colonne);
+			}
+		};
+		if (estInvariantParBij(p,symAntiSlash))
+			return true;
+		return false;
+	}
+
+	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		for (int line = H-1;line>=0;line--){
-			for (int col = 0;col <L;col++){
-				Couleur c = quiEstLa(new Coup(col,line));
+		for (int line = H - 1; line >= 0; line--) {
+			for (int col = 0; col < L; col++) {
+				Couleur c = quiEstLa(new Coup(col, line));
 				if (c == Couleur.BLANC)
 					sb.append("O");
 				else if (c == Couleur.NOIR)

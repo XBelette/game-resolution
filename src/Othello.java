@@ -24,7 +24,7 @@ public class Othello extends Jeu {
 	}
 
 	@Override
-	public PriorityQueue<Coup> GetCoupsPossibles(Couleur c) {
+	public LinkedList<Coup> GetCoupsPossibles(Couleur c) {
 		PriorityQueue<CoupCompare> coupsPossibles = new PriorityQueue<>();
 		CoupCompare coupCourant = new CoupCompare(this,c);
 		while (coupCourant.line < H) {
@@ -39,25 +39,13 @@ public class Othello extends Jeu {
 			coupCourant.line++;
 			coupCourant.colonne = 0;
 		}
-		PriorityQueue<Coup> coups = new PriorityQueue<>();
+		LinkedList<Coup> coups = new LinkedList<>();
 		coups.addAll(coupsPossibles);
 		
-		return (PriorityQueue<Coup>) coups;
+		return coups;
 
 	}
-
-	@Override
-	public Boolean blancGagne() {
-		if (!partieFinie())
-			return null;
-		int gain = this.getp().Nb(Couleur.BLANC) - this.getp().Nb(Couleur.NOIR);
-		if (gain < 0)
-			return false;
-		if (gain > 0)
-			return true;
-		return null;
-	}
-
+	
 	@Override
 	public boolean partieFinie() {
 		if (GetCoupsPossibles(Couleur.BLANC).isEmpty()

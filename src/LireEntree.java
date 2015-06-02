@@ -40,15 +40,15 @@ public class LireEntree {
 			if (x == '.') { // Case vide
 				curseur++;
 				c = suivant(c, H, L);
-			} else if (x == '@') { // Case occupée par un noir
+			} else if (x == '@') { // Case occupÃ©e par un noir
 				p.ajouteNoir(c);
 				curseur++;
 				c = suivant(c, H, L);
-			} else if (x == '0') { // Case occupée par un blanc
+			} else if (x == '0') { // Case occupÃ©e par un blanc
 				p.ajouteBlanc(c);
 				curseur++;
 				c = suivant(c, H, L);
-			} else { // Pas d'info
+			} else { // Pas d'information
 				curseur++;
 			}
 		}

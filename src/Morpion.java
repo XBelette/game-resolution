@@ -1,8 +1,8 @@
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 
 public class Morpion extends Jeu{
-
 
 	final int k;
 
@@ -16,7 +16,6 @@ public class Morpion extends Jeu{
 		this.k = k;
 	}
 	
-	// 1 pour les blancs, -1 pour les noirs
 	@Override
 	public void joueCoup(Coup coup, Couleur couleur){
 		if (p.quiEstLa(coup)!=null){
@@ -32,59 +31,28 @@ public class Morpion extends Jeu{
 			throw new IllegalArgumentException("Couleur indeterminee");
 	}
 	
-	public void undo(Coup coup) {
-		p.remove(coup);
-	}
-	
 	@Override
-	public PriorityQueue<Coup> GetCoupsPossibles(Couleur c){
+	public LinkedList<Coup> GetCoupsPossibles(Couleur c){
 		PriorityQueue<CoupCompare> coupsPossibles = new PriorityQueue<>();
 		CoupCompare coupCourant = new CoupCompare(this, c);
 		while(coupCourant.line < H){
 			while(coupCourant.colonne < L){
-				// Une priorité pourrait être calculée ici
 				if(p.quiEstLa(coupCourant) == null) coupsPossibles.add(new CoupCompare(coupCourant.colonne, coupCourant.line,this,c));
 				coupCourant.colonne++;
 			}
 			coupCourant.line++;
 			coupCourant.colonne = 0;
 		}
-		PriorityQueue<Coup> coups = new PriorityQueue<>();
+		LinkedList<Coup> coups = new LinkedList<>();
 		coups.addAll(coupsPossibles);
 		
 		return coups;
 	}
 	
-	/*
-	public static void main(String[] args) {
-		Jeu j = new Morpion(2,2,2);
-		PriorityQueue<Coup> p = j.GetCoupsPossibles(Couleur.BLANC);
-		for (Coup c : p)
-			System.out.println(c);
-	}
-	*/
-	
-	@Override
-	public Boolean blancGagne(){
-		// Rappel : retourne true si blanc gagne, false si noir gagne, et null si rien n'est joué
-		Boolean test = null;
-		// Blanc gagne-t-il ?
-		test = p.alignementHorizontal(k, Couleur.BLANC) || p.alignementVertical(k, Couleur.BLANC)
-				|| p.alignementDiagonaleAntislash(k, Couleur.BLANC) || p.alignementDiagonaleSlash(k, Couleur.BLANC);
-		if(test) return true;
-		// Okay, donc blanc ne gagne pas. Et noir ?
-		test = p.alignementHorizontal(k, Couleur.NOIR) || p.alignementVertical(k, Couleur.NOIR)
-				|| p.alignementDiagonaleAntislash(k, Couleur.NOIR) || p.alignementDiagonaleSlash(k, Couleur.NOIR);
-		if(test) return false;
-		
-		// Si vraiment personne n'a gagné :
-		return null;
-	}
-	
 	public boolean partieFinie(){ // La partie est finie si :
-		if (blancGagne()!=null) // Noir ou Blanc a align� ses pions
+		if (gagne(Couleur.BLANC) || gagne(Couleur.NOIR)) // Noir ou Blanc a aligné ses pions
 			return true;
-		PriorityQueue<Coup> l = GetCoupsPossibles(Couleur.BLANC);
+		LinkedList<Coup> l = GetCoupsPossibles(Couleur.BLANC);
 		if (l.isEmpty()) // Le plateau est plein
 			return true;
 		return false;

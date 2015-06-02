@@ -1,22 +1,19 @@
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 
 
 public class Negamax extends Recherche {
 	
 	LinkedList<Position> historique;
-	boolean skipped;
 	
 	public Negamax(Jeu j){
 		super(j);
 		historique = new LinkedList<>();
-		skipped = false;
 	}
 	
 	@Override
 	public int recherche(Couleur tour) {
 		
-		// Only initial call : checking if the game is over.
+		// Appelé uniquement au départ : on vérifie si la partie n'est pas déjà finie
 		if (j.partieFinie()) {
 			boolean BlancGagne = j.gagne(Couleur.BLANC);
 			boolean NoirGagne = j.gagne(Couleur.NOIR);
@@ -29,14 +26,14 @@ public class Negamax extends Recherche {
 			return StatusConstants.DRAW;
 		}
 		
-		// If not, well, time to play !
+		// Sinon, il va falloir jouer !
 		return rechercheAux(tour);
 		
 	}
 	
 	public int rechercheAux(Couleur tour){
 		j.p.augmenteProfondeur();
-		PriorityQueue<Coup> aJouer = j.GetCoupsPossibles(tour);
+		LinkedList<Coup> aJouer = j.GetCoupsPossibles(tour);
 		Coup coupCourant = new Coup();
 		boolean gagnant = false;
 		boolean premierCoup = true;
@@ -45,7 +42,6 @@ public class Negamax extends Recherche {
 		int scoreCourant = StatusConstants.LOSE;
 		while((coupCourant = aJouer.poll()) != null){
 			premierCoup = false;
-			skipped = false;
 			historique.add(j.p.copy());
 			j.joueCoup(coupCourant, tour);
 			gagnant = j.gagne(tour);
@@ -67,13 +63,10 @@ public class Negamax extends Recherche {
 			}
 			j.undo(historique.pollFirst());
 		}
-		if(premierCoup){// Othello specific case : if there is no move to play initially, the other player may play next
-			if(!skipped){ // If I've already skipped a turn, I don't want to get trapped in an infinite loop.
-				skipped = true;
-				meilleurScore= -rechercheAux(tour.other());
-				j.p.diminueProfondeur();
-				return meilleurScore;
-			}
+		if(premierCoup){// Cas spécifique à Othello : un joueur peut jouer deux coups de suite si son adversaire est bloqué
+			meilleurScore= -rechercheAux(tour.other());
+			j.p.diminueProfondeur();
+			return meilleurScore;
 		}
 		j.p.diminueProfondeur();
 		return meilleurScore;

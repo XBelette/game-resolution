@@ -15,7 +15,7 @@ public class Affichage extends JPanel {
 
 	public Affichage(Position p) {
 		setBackground(Color.LIGHT_GRAY);
-		setPreferredSize(new Dimension(600, 600)); // taille du cadre
+		setPreferredSize(new Dimension(600,600)); // Taille du cadre
 		this.p = p;
 		this.L = p.L;
 		this.H = p.H;
@@ -25,7 +25,7 @@ public class Affichage extends JPanel {
 
 		double pas = (double) (TP) / (Math.max(L, H));
 
-		// Trace des lignes du cube
+		// Tracé des lignes du plateau
 		g.setColor(Color.BLACK);
 		g.drawLine(50, 50, (int) Math.round(50 + L * pas), 50);
 		for (int i = 0; i < H; i++)

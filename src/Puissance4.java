@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 
@@ -30,10 +31,9 @@ public class Puissance4 extends Jeu{
 		else
 			throw new IllegalArgumentException("Couleur indeterminee");
 	}
-
 	
-	public PriorityQueue<Coup> GetCoupsPossibles(Couleur c){
-		PriorityQueue<Coup> coupsPossibles = new PriorityQueue<Coup>();
+	public LinkedList<Coup> GetCoupsPossibles(Couleur c){
+		LinkedList<Coup> coupsPossibles = new LinkedList<Coup>();
 		PriorityQueue<CoupCompare> coupsOrdonnes = new PriorityQueue<CoupCompare>();
 		CoupCompare coupCourant = new CoupCompare(this,c);
 		// On ignore les lignes, chic au p4 !
@@ -45,34 +45,18 @@ public class Puissance4 extends Jeu{
 			// Okay, donc je suis sur la première case où il n'y a personne
 			// Si je suis trop haut en fait je ne peux pas jouer dans cette colonne
 			if(coupCourant.line < H)
-				coupsOrdonnes.add(new CoupCompare(coupCourant.colonne, coupCourant.line, this, c));
+				coupsOrdonnes.add(new CoupCompare(coupCourant.colonne, coupCourant.line, this,c));
 			coupCourant.colonne++;
 		}
 		coupsPossibles.addAll(coupsOrdonnes);
 		return coupsPossibles;
 	}
 	
-	@Override
-	public Boolean blancGagne(){
-		// Rappel : retourne true si blanc gagne, false si noir gagne, et null si rien n'est joue
-		Boolean test = null;
-		// Blanc gagne-t-il ?
-		test = p.alignementHorizontal((byte)4, Couleur.BLANC) || p.alignementVertical((byte) 4, Couleur.BLANC)
-				|| p.alignementDiagonaleAntislash((byte) 4, Couleur.BLANC) || p.alignementDiagonaleSlash((byte) 4, Couleur.BLANC);
-		if(test) return true;
-		// Okay, donc blanc ne gagne pas. Et noir ?
-		test = p.alignementHorizontal((byte)4, Couleur.NOIR) || p.alignementVertical((byte) 4, Couleur.NOIR)
-				|| p.alignementDiagonaleAntislash((byte) 4, Couleur.NOIR) || p.alignementDiagonaleSlash((byte) 4, Couleur.NOIR);
-		if(test) return false;
-		
-		// Si vraiment personne n'a gagné :
-		return null;
-	}
 	
 	public boolean partieFinie(){
-		if (blancGagne()!=null) // Noir ou Blanc a align� ses pions
+		if (gagne(Couleur.BLANC) || gagne(Couleur.NOIR)) // Noir ou Blanc a aligné ses pions
 			return true;
-		PriorityQueue<Coup> l = GetCoupsPossibles(Couleur.BLANC);
+		LinkedList<Coup> l = GetCoupsPossibles(Couleur.BLANC);
 		if (l.isEmpty()) // Le plateau est plein
 			return true;
 		return false;
@@ -84,13 +68,5 @@ public class Puissance4 extends Jeu{
 		|| p.alignementDiagonaleAntislash(4, tour) || p.alignementDiagonaleSlash(4, tour);
 	}
 
-	public void undo(Coup coup) {
-		coup.line = H;
-		while(coup.line >= 0 && p.quiEstLa(coup) == null)
-			coup.line--;
-		if(coup.line < 0)
-			throw new IllegalArgumentException("Colonne vide");
-		p.remove(coup);
-	}
-
+	
 }

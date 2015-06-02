@@ -1,9 +1,11 @@
-public class Coup implements Comparable<Coup> {
+
+
+public class Coup {
 	public int colonne;
 	public int line;
 
 	public Coup() {
-		// Defaults to 0,0
+		// Par défaut à 0,
 		colonne = 0;
 		line = 0;
 	}
@@ -16,15 +18,6 @@ public class Coup implements Comparable<Coup> {
 	@Override
 	public String toString() {
 		return "line : " + this.line + ", colonne : " + this.colonne;
-	}
-
-	@Override
-	public int compareTo(Coup arg0) {
-		// There WILL be an heuristic for this later on
-		// There will have some problem for making it dependent on the game, but
-		// time for that later.
-		// For now, let's just say they are all equal.
-		return 0;
 	}
 
 	public Coup coupVoisin(Voisinage v, int H, int L) {
@@ -52,4 +45,5 @@ public class Coup implements Comparable<Coup> {
 		}
 		return new Coup(nouvCol, nouvLigne);
 	}
+
 }

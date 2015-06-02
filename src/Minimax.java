@@ -1,5 +1,4 @@
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 
 public class Minimax extends Recherche {
 
@@ -17,7 +16,7 @@ public class Minimax extends Recherche {
 	@Override
 	public int recherche(Couleur tour) {
 
-		// Maybe the game is already over
+		// La partie est peut-être déjà finie
 		if (j.partieFinie()) {
 			boolean BlancGagne = j.gagne(Couleur.BLANC);
 			boolean NoirGagne = j.gagne(Couleur.NOIR);
@@ -34,7 +33,7 @@ public class Minimax extends Recherche {
 	}
 
 	public int rechercheAux(Couleur tour) {
-		PriorityQueue<Coup> aJouer = j.GetCoupsPossibles(tour);
+		LinkedList<Coup> aJouer = j.GetCoupsPossibles(tour);
 		Coup coupCourant = new Coup();
 		int meilleurScore;
 		int scoreCourant;
@@ -49,7 +48,12 @@ public class Minimax extends Recherche {
 				}
 				historique.addFirst(j.getp().copy());
 				j.joueCoup(coupCourant, tour);
-				gagnant = j.blancGagne();
+				if (j.gagne(Couleur.BLANC))
+					gagnant = true;
+				else if (j.gagne(Couleur.NOIR))
+					gagnant = false;
+				else
+					gagnant = null;
 				if (gagnant != null && gagnant == true) {
 					j.undo(historique.pollFirst());
 					return StatusConstants.WIN;
@@ -77,7 +81,12 @@ public class Minimax extends Recherche {
 				}
 				historique.addFirst(j.getp().copy());
 				j.joueCoup(coupCourant, tour);
-				gagnant = j.blancGagne();
+				if (j.gagne(Couleur.BLANC))
+					gagnant = true;
+				else if (j.gagne(Couleur.NOIR))
+					gagnant = false;
+				else
+					gagnant = null;
 				if (gagnant != null && gagnant == false) {
 					j.undo(historique.pollFirst());
 					return StatusConstants.LOSE;
