@@ -1,15 +1,18 @@
 public class CoupCompare extends Coup implements Comparable<Coup> {
 
 	Jeu j; // m pour Morpion, o pour Othello, p pour Puissance4
+	Couleur player;
 
-	public CoupCompare(int col, int l, Jeu j) {
+	public CoupCompare(int col, int l, Jeu j, Couleur player) {
 		super(col, l);
 		this.j = j;
+		this.player = player;
 	}
 
-	public CoupCompare(Jeu j) {
+	public CoupCompare(Jeu j, Couleur player) {
 		super();
 		this.j = j;
+		this.player = player;
 	}
 
 	public static boolean isACorner(Coup c, Jeu j) {
@@ -42,7 +45,16 @@ public class CoupCompare extends Coup implements Comparable<Coup> {
 					+ (2 * this.colonne - L + 1) * (2 * this.colonne - L + 1);
 			int dthat = (2 * that.line - H + 1) * (2 * that.line - H + 1)
 					+ (2 * that.colonne - L + 1) * (2 * that.colonne - L + 1);
-			return dthis - dthat;
+			// Also we want to play someplace where we line up tokens.
+			j.joueCoup(this, this.player);
+			int alignThis = j.p.maxAlign(this, player);
+			j.p.remove(this);
+			j.joueCoup(that, player);
+			int alignThat = j.p.maxAlign(that, player);
+			j.p.remove(that);
+			
+			return alignThis-alignThat+dthis-dthat;
+			
 		} else if (j instanceof Othello) { // Instinctively, we'd rather play first in
 											// the corners then on the edges
 			if (isACorner(this, j) && isACorner(that,j))

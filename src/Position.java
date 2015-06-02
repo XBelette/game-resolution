@@ -110,7 +110,82 @@ public class Position {
 		positionNoirs = (positionNoirs & adresse);
 		return true;
 	}
-
+	
+	public int maxAlign(Coup coup, Couleur c){// Returns longest alignment of which Coup coup is part of.
+		long adresse = ((long)1 << coup.colonne * (H + 1) + coup.line);
+		long grilleAlignementsVerticaux;
+		long grilleAlignementsHorizontaux;
+		long grilleAlignementsSlash;
+		long grilleAlignementsAntislash;
+		long placesH;
+		long placesV;
+		long placesS;
+		long placesA;
+		int maxLength = 1;
+		boolean stillAligned = true;
+		switch(c){
+		case BLANC:
+			grilleAlignementsVerticaux = this.positionBlancs;
+			grilleAlignementsHorizontaux = this.positionBlancs;
+			grilleAlignementsSlash = this.positionBlancs;
+			grilleAlignementsAntislash = this.positionBlancs;
+			break;
+		case NOIR:
+			grilleAlignementsVerticaux = this.positionNoirs;
+			grilleAlignementsHorizontaux = this.positionBlancs;
+			grilleAlignementsSlash = this.positionBlancs;
+			grilleAlignementsAntislash = this.positionBlancs;
+			break;
+		default:
+			throw new IllegalArgumentException(
+					"Erreur dans les fonctions d'alignements : il y a une troisième couleur !");
+		}
+		// Now to get that maximum length.
+		grilleAlignementsVerticaux = grilleAlignementsVerticaux
+				& (grilleAlignementsVerticaux >> (long) (1));
+		grilleAlignementsHorizontaux = grilleAlignementsHorizontaux
+				& (grilleAlignementsHorizontaux >> (long) (H + 1));
+		grilleAlignementsAntislash = grilleAlignementsAntislash
+				& (grilleAlignementsAntislash >> (long) H);
+		grilleAlignementsSlash = grilleAlignementsSlash
+				& (grilleAlignementsSlash >> (long) (H + 2));
+		long places = adresse; //There are more than one place to look at to see if the alignment gets longer
+		places = places | places >> (long) 1 // address might be the upper limit in a vertical alignment
+						| places >> (long) (H+1) // Or the right hand limit in a horizontal alignment
+						| places >> (long) H	// Or the lower-right limit in a \ like alignment
+						| places >> (long) (H+2); // Or the upper-right limit in a / like alignment
+		stillAligned = (places & (grilleAlignementsVerticaux | grilleAlignementsHorizontaux
+								| grilleAlignementsAntislash | grilleAlignementsSlash)) >= 1;
+		while(stillAligned){
+			maxLength++;
+			// I'll need to split places the same way I split it for alignments
+			placesH=adresse;
+			placesV=adresse;
+			placesS=adresse;
+			placesA=adresse;
+			for(int i = 0; i < maxLength; i++){
+				placesH = placesH | placesH >> (long) 1;
+				placesV = placesV | placesV >> (long) H+1;
+				placesS = placesS | placesS >> (long) H+2;
+				placesA = placesA | placesA >> (long) H;
+			}
+			places = adresse | placesH | placesV | placesS | placesA;
+			
+			// Also updating alignments :
+			grilleAlignementsVerticaux = grilleAlignementsVerticaux
+					& (grilleAlignementsVerticaux >> (long) (1));
+			grilleAlignementsHorizontaux = grilleAlignementsHorizontaux
+					& (grilleAlignementsHorizontaux >> (long) (H + 1));
+			grilleAlignementsAntislash = grilleAlignementsAntislash
+					& (grilleAlignementsAntislash >> (long) H);
+			grilleAlignementsSlash = grilleAlignementsSlash
+					& (grilleAlignementsSlash >> (long) (H + 2));
+			// Okay, reasonable places ?
+			stillAligned = ((placesV & grilleAlignementsVerticaux) |(placesV & grilleAlignementsHorizontaux)
+					|(placesA & grilleAlignementsAntislash) | (placesS & grilleAlignementsSlash)) >= 1;
+		}
+		return maxLength;
+	}
 	public boolean alignementVertical(int n, Couleur color) {
 		// Teste si un alignement vertical de l jetons du joueur color ou plus
 		// existe

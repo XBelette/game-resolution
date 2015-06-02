@@ -5,10 +5,12 @@ import java.util.PriorityQueue;
 public class Negamax extends Recherche {
 	
 	LinkedList<Position> historique;
+	boolean skipped;
 	
 	public Negamax(Jeu j){
 		super(j);
 		historique = new LinkedList<>();
+		skipped = false;
 	}
 	
 	@Override
@@ -43,6 +45,7 @@ public class Negamax extends Recherche {
 		int scoreCourant = StatusConstants.LOSE;
 		while((coupCourant = aJouer.poll()) != null){
 			premierCoup = false;
+			skipped = false;
 			historique.add(j.p.copy());
 			j.joueCoup(coupCourant, tour);
 			gagnant = j.gagne(tour);
@@ -65,9 +68,12 @@ public class Negamax extends Recherche {
 			j.undo(historique.pollFirst());
 		}
 		if(premierCoup){// Othello specific case : if there is no move to play initially, the other player may play next
-			meilleurScore= -rechercheAux(tour.other());
-			j.p.diminueProfondeur();
-			return meilleurScore;
+			if(!skipped){ // If I've already skipped a turn, I don't want to get trapped in an infinite loop.
+				skipped = true;
+				meilleurScore= -rechercheAux(tour.other());
+				j.p.diminueProfondeur();
+				return meilleurScore;
+			}
 		}
 		j.p.diminueProfondeur();
 		return meilleurScore;

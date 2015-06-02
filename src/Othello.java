@@ -26,14 +26,14 @@ public class Othello extends Jeu {
 	@Override
 	public PriorityQueue<Coup> GetCoupsPossibles(Couleur c) {
 		PriorityQueue<CoupCompare> coupsPossibles = new PriorityQueue<>();
-		CoupCompare coupCourant = new CoupCompare(this);
+		CoupCompare coupCourant = new CoupCompare(this,c);
 		while (coupCourant.line < H) {
 			while (coupCourant.colonne < L) {
 				// Une priorité pourrait être calculée ici
 				if (p.quiEstLa(coupCourant) == null
 						&& coupPossible(coupCourant, c) != null)
 					coupsPossibles.add(new CoupCompare(coupCourant.colonne,
-							coupCourant.line,this));
+							coupCourant.line,this,c));
 				coupCourant.colonne++;
 			}
 			coupCourant.line++;

@@ -33,18 +33,17 @@ public class Morpion extends Jeu{
 	}
 	
 	public void undo(Coup coup) {
-		// Maybe add some checks ?
 		p.remove(coup);
 	}
 	
 	@Override
 	public PriorityQueue<Coup> GetCoupsPossibles(Couleur c){
 		PriorityQueue<CoupCompare> coupsPossibles = new PriorityQueue<>();
-		CoupCompare coupCourant = new CoupCompare(this);
+		CoupCompare coupCourant = new CoupCompare(this, c);
 		while(coupCourant.line < H){
 			while(coupCourant.colonne < L){
 				// Une priorité pourrait être calculée ici
-				if(p.quiEstLa(coupCourant) == null) coupsPossibles.add(new CoupCompare(coupCourant.colonne, coupCourant.line,this));
+				if(p.quiEstLa(coupCourant) == null) coupsPossibles.add(new CoupCompare(coupCourant.colonne, coupCourant.line,this,c));
 				coupCourant.colonne++;
 			}
 			coupCourant.line++;

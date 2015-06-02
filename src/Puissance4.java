@@ -30,11 +30,12 @@ public class Puissance4 extends Jeu{
 		else
 			throw new IllegalArgumentException("Couleur indeterminee");
 	}
+
 	
 	public PriorityQueue<Coup> GetCoupsPossibles(Couleur c){
 		PriorityQueue<Coup> coupsPossibles = new PriorityQueue<Coup>();
 		PriorityQueue<CoupCompare> coupsOrdonnes = new PriorityQueue<CoupCompare>();
-		CoupCompare coupCourant = new CoupCompare(this);
+		CoupCompare coupCourant = new CoupCompare(this,c);
 		// On ignore les lignes, chic au p4 !
 		while(coupCourant.colonne < L){
 			coupCourant.line = 0;
@@ -44,7 +45,7 @@ public class Puissance4 extends Jeu{
 			// Okay, donc je suis sur la première case où il n'y a personne
 			// Si je suis trop haut en fait je ne peux pas jouer dans cette colonne
 			if(coupCourant.line < H)
-				coupsOrdonnes.add(new CoupCompare(coupCourant.colonne, coupCourant.line, this));
+				coupsOrdonnes.add(new CoupCompare(coupCourant.colonne, coupCourant.line, this, c));
 			coupCourant.colonne++;
 		}
 		coupsPossibles.addAll(coupsOrdonnes);
