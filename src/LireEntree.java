@@ -57,7 +57,6 @@ public class LireEntree {
 			int k = Integer.parseInt(dimension[0]);
 			return new Morpion(L, H, (byte) k, p);
 		} else if (titre.equals("connect4")) {
-			System.err.println("Coucou je suis sorti");
 			return new Puissance4(L, H, p);
 		} else if (titre.equals("othello")) {
 			return new Othello(L, H, p);
